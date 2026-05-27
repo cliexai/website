@@ -20,20 +20,30 @@ export const Navbar: React.FC = () => {
   return (
     <>
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-black/10 dark:border-white/10 bg-white/85 dark:bg-[#0c0c0c]/85 md:bg-white/70 md:dark:bg-[#0c0c0c]/70 md:backdrop-blur-xl md:backdrop-saturate-150">
-        <div className="max-w-7xl mx-auto px-6 py-2.5 md:py-3 flex items-center justify-between">
+        <motion.nav
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
+          className="max-w-7xl mx-auto px-6 py-2.5 md:py-3 flex items-center justify-between"
+        >
+        {/* Left: LogoMark only */}
         <a href="#" className="text-brand flex items-center justify-center" aria-label="ClieX AI Home">
           <LogoMark className="w-7 h-7 text-brand" />
         </a>
 
+        {/* Center: Links (Desktop) */}
         <div className="hidden md:flex items-center gap-8">
-          {links.map((link) => (
-            <a
+          {links.map((link, i) => (
+            <motion.a
               key={link.label}
               href={link.href}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 + i * 0.05, ease: 'easeOut' }}
               className="text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white text-sm font-medium transition-colors duration-200"
             >
               {link.label}
-            </a>
+            </motion.a>
           ))}
         </div>
 
@@ -66,7 +76,7 @@ export const Navbar: React.FC = () => {
             {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
           </button>
         </div>
-        </div>
+        </motion.nav>
       </header>
 
       {/* Spacer matching fixed header height so page content starts below the bar */}

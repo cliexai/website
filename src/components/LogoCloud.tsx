@@ -1,9 +1,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { useIsMobile } from '../hooks/useIsMobile';
 
 export const LogoCloud: React.FC = () => {
-  const isMobile = useIsMobile();
   const logos = ['Linear', 'Vercel', 'Figma', 'Stripe', 'Ramp', 'Notion', 'Loom', 'Arc'];
 
   const containerVariants = {
@@ -29,16 +27,16 @@ export const LogoCloud: React.FC = () => {
         </h3>
         
         <motion.div
-          variants={!isMobile ? containerVariants : undefined}
-          initial={isMobile ? false : 'hidden'}
-          whileInView={isMobile ? undefined : 'show'}
-          viewport={isMobile ? undefined : { once: true, margin: '-100px' }}
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: false, margin: '-100px' }}
           className="mt-10 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-6 items-center"
         >
           {logos.map((logo) => (
             <motion.div
               key={logo}
-              variants={!isMobile ? itemVariants : undefined}
+              variants={itemVariants}
               className="flex items-center justify-center py-4 rounded-xl border border-transparent hover:border-black/5 dark:hover:border-white/5 hover:bg-black/[0.01] dark:hover:bg-white/[0.01] transition-all group"
             >
               <span className="text-sm font-semibold tracking-tight text-black/40 dark:text-white/45 group-hover:text-brand dark:group-hover:text-white transition-colors duration-200">

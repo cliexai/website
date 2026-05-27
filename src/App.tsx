@@ -7,7 +7,6 @@ import { Hero } from './components/Hero';
 import { MacOSBar } from './components/MacOSBar';
 import { FloatingAgent } from './components/FloatingAgent';
 import { X, ChevronUp } from 'lucide-react';
-import { useIsMobile } from './hooks/useIsMobile';
 
 const VIDEO_SRC = 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260508_064122_c4750c0e-7476-4b44-94a2-a85a65c63bf2.mp4';
 
@@ -29,7 +28,6 @@ const SectionFallback: React.FC<{ height?: string }> = ({ height = 'py-40' }) =>
 );
 
 const MainLayout: React.FC = () => {
-  const isMobile = useIsMobile();
   const lenisRef = useRef<Lenis | null>(null);
   const [activeVid, setActiveVid] = useState(1);
   const [showNotice, setShowNotice] = useState(true);
@@ -38,7 +36,6 @@ const MainLayout: React.FC = () => {
   const vid2Ref = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    if (isMobile) return;
     const vid1 = vid1Ref.current;
     const vid2 = vid2Ref.current;
     if (!vid1 || !vid2) return;
@@ -63,17 +60,16 @@ const MainLayout: React.FC = () => {
       vid1.removeEventListener('timeupdate', onTime);
       vid2.removeEventListener('timeupdate', onTime);
     };
-  }, [activeVid, isMobile]);
+  }, [activeVid]);
 
   useEffect(() => {
-    if (isMobile) return;
-
+    const isMobile = window.innerWidth < 768;
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: isMobile ? 0.8 : 1.2,
       easing: (t) => 1 - Math.pow(1 - t, 3),
-      smoothWheel: true,
-      wheelMultiplier: 1,
-      touchMultiplier: 0.8,
+      smoothWheel: !isMobile,
+      wheelMultiplier: isMobile ? 0.8 : 1,
+      touchMultiplier: isMobile ? 0.5 : 0.8,
     });
     lenisRef.current = lenis;
     setLenisInstance(lenis);
@@ -86,147 +82,145 @@ const MainLayout: React.FC = () => {
 
     document.addEventListener('click', handleDocumentAnchorClick, true);
 
-    return () => {
-      document.removeEventListener('click', handleDocumentAnchorClick, true);
-      lenis.destroy();
-      setLenisInstance(null);
-    };
-  }, [isMobile]);
-
-  useEffect(() => {
-    if (isMobile) {
-      document.addEventListener('click', handleDocumentAnchorClick, true);
-      return () => document.removeEventListener('click', handleDocumentAnchorClick, true);
-    }
-  }, [isMobile]);
-
-  useEffect(() => {
     const handleScroll = () => {
       const scrollPercent = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
       setShowScrollTop(scrollPercent > 0.45);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
-  const scrollToTop = isMobile
-    ? () => window.scrollTo({ top: 0, behavior: 'smooth' })
-    : () => getLenisInstance()?.scrollTo(0, { duration: 1.2 });
+    return () => {
+      document.removeEventListener('click', handleDocumentAnchorClick, true);
+      window.removeEventListener('scroll', handleScroll);
+      lenis.destroy();
+      setLenisInstance(null);
+    };
+  }, []);
 
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-white text-black dark:bg-[#0c0c0c] dark:text-white transition-colors duration-300 selection:bg-brand/30">
       
-      {!isMobile && (
-        <svg className="absolute w-0 h-0 pointer-events-none" style={{ visibility: 'hidden' }}>
-          <defs>
-            <filter id="c3-noise">
-              <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" />
-              <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.35 0" />
-              <feComposite in2="SourceGraphic" operator="in" result="noise" />
-              <feBlend in="SourceGraphic" in2="noise" mode="multiply" />
-            </filter>
-          </defs>
-        </svg>
-      )}
+      {/* Global SVG noise filter at root level exactly as requested */}
+      <svg className="absolute w-0 h-0 pointer-events-none" style={{ visibility: 'hidden' }}>
+        <defs>
+          <filter id="c3-noise">
+            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" />
+            <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.35 0" />
+            <feComposite in2="SourceGraphic" operator="in" result="noise" />
+            <feBlend in="SourceGraphic" in2="noise" mode="multiply" />
+          </filter>
+        </defs>
+      </svg>
 
-      {isMobile ? (
-        <div className="fixed inset-0 z-0 pointer-events-none bg-gradient-to-b from-brand/5 via-brand/10 to-brand/5 dark:from-brand/[0.03] dark:via-brand/[0.06] dark:to-brand/[0.03]" />
-      ) : (
-        <>
-          <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-            <video
-              ref={vid1Ref}
-              autoPlay
-              muted
-              playsInline
-              preload="auto"
-              className="absolute inset-0 w-full h-full object-cover pointer-events-none transition-opacity duration-[1s] ease-in-out"
-              style={{
-                opacity: activeVid === 1 ? 0.55 : 0,
-                maskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)',
-                WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)',
-              }}
-              src={VIDEO_SRC}
-            />
-            <video
-              ref={vid2Ref}
-              muted
-              playsInline
-              preload="auto"
-              className="absolute inset-0 w-full h-full object-cover pointer-events-none transition-opacity duration-[1s] ease-in-out"
-              style={{
-                opacity: activeVid === 2 ? 0.55 : 0,
-                maskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)',
-                WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)',
-              }}
-              src={VIDEO_SRC}
-            />
-          </div>
-          <div className="fixed inset-0 z-0 pointer-events-none mix-blend-color bg-brand/60" />
-        </>
-      )}
+      {/* Global background video — dual crossfade for seamless loop */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <video
+          ref={vid1Ref}
+          autoPlay
+          muted
+          playsInline
+          preload="auto"
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none transition-opacity duration-[1s] ease-in-out"
+          style={{
+            opacity: activeVid === 1 ? 0.55 : 0,
+            maskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)',
+          }}
+          src={VIDEO_SRC}
+        />
+        <video
+          ref={vid2Ref}
+          muted
+          playsInline
+          preload="auto"
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none transition-opacity duration-[1s] ease-in-out"
+          style={{
+            opacity: activeVid === 2 ? 0.55 : 0,
+            maskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)',
+          }}
+          src={VIDEO_SRC}
+        />
+      </div>
 
+      {/* Purple color overlay — shifts video hues to brand purple via GPU blend (zero per-frame cost) */}
+      <div className="fixed inset-0 z-0 pointer-events-none mix-blend-color bg-brand/60" />
+
+      {/* Cinematic Frosted Glass Gradient Overlay - Ensures high readability in both modes */}
       <div className="fixed inset-0 z-0 pointer-events-none bg-gradient-to-b from-white/50 via-white/65 to-white/75 dark:from-[#0c0c0c]/60 dark:via-[#0c0c0c]/72 dark:to-[#0c0c0c]/82 transition-colors duration-300" />
 
+      {/* Page Sections */}
       <div className="relative z-10">
         <Navbar />
         <Hero />
         
+        {/* macOS menu bar strip */}
         <MacOSBar />
         
+        {/* Voice agent dashboard mockup — above fold */}
         <Suspense fallback={<SectionFallback height="py-24" />}>
           <VoiceDashboardMockup />
         </Suspense>
         
+        {/* Features / Benefits */}
         <Suspense fallback={<SectionFallback />}>
           <Features />
         </Suspense>
         
+        {/* Partner Logos */}
         <Suspense fallback={<SectionFallback height="py-16" />}>
           <LogoCloud />
         </Suspense>
         
+        {/* Performance metrics stats */}
         <Suspense fallback={<SectionFallback height="py-16" />}>
           <Stats />
         </Suspense>
         
+        {/* Customer reviews */}
         <Suspense fallback={<SectionFallback />}>
           <Testimonials />
         </Suspense>
         
+        {/* Pricing tiers */}
         <Suspense fallback={<SectionFallback />}>
           <Pricing />
         </Suspense>
         
+        {/* Help Center FAQs */}
         <Suspense fallback={<SectionFallback />}>
           <FAQ />
         </Suspense>
         
+        {/* WhatsApp & Email Lead capture */}
         <Suspense fallback={<SectionFallback />}>
           <LeadForm />
         </Suspense>
         
+        {/* Bottom CTA block */}
         <Suspense fallback={<SectionFallback />}>
           <FinalCTA />
         </Suspense>
         
+        {/* Footer info and badge */}
         <Suspense fallback={<SectionFallback height="py-16" />}>
           <Footer />
         </Suspense>
       </div>
 
+      {/* Scroll-to-top button */}
       {showScrollTop && (
         <button
-          onClick={scrollToTop}
-          className={`fixed left-4 z-[60] w-10 h-10 rounded-full border border-black/15 dark:border-white/10 bg-white/80 dark:bg-[#0c0c0c]/80 md:backdrop-blur-xl text-black/60 dark:text-white/60 hover:text-brand dark:hover:text-brand hover:border-brand/40 shadow-lg flex items-center justify-center active:scale-90 transition-all ${showNotice ? 'bottom-14' : 'bottom-4'}`}
+          onClick={() => getLenisInstance()?.scrollTo(0, { duration: 1.2 })}
+          className={`fixed left-4 z-[60] w-10 h-10 rounded-full border border-black/15 dark:border-white/10 bg-white/80 dark:bg-[#0c0c0c]/80 backdrop-blur-xl text-black/60 dark:text-white/60 hover:text-brand dark:hover:text-brand hover:border-brand/40 shadow-lg flex items-center justify-center active:scale-90 transition-all ${showNotice ? 'bottom-14' : 'bottom-4'}`}
           aria-label="Scroll to top"
         >
           <ChevronUp className="w-5 h-5" />
         </button>
       )}
 
+      {/* Under-construction notice */}
       {showNotice && (
-        <div className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-center gap-3 px-4 py-2 text-[11px] font-medium text-white bg-brand/80 md:backdrop-blur-md">
+        <div className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-center gap-3 px-4 py-2 text-[11px] font-medium text-white bg-brand/80 backdrop-blur-md">
           <span>🚧 This site is a work in progress — some features may evolve</span>
           <button
             onClick={() => setShowNotice(false)}
@@ -238,6 +232,7 @@ const MainLayout: React.FC = () => {
         </div>
       )}
 
+      {/* Persistent floating Voice Widget */}
       <FloatingAgent />
     </div>
   );

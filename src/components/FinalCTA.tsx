@@ -3,17 +3,15 @@ import { motion } from 'motion/react';
 import { AppleButton } from './SharedPrimitives';
 import { ChevronRight } from 'lucide-react';
 import { scrollToId } from '../utils/smoothScroll';
-import { useIsMobile } from '../hooks/useIsMobile';
 
 export const FinalCTA: React.FC = () => {
-  const isMobile = useIsMobile();
   return (
     <section className="max-w-7xl mx-auto px-6 py-20 md:py-32 relative z-10">
       <motion.div
-        initial={isMobile ? false : { opacity: 0, y: 65 }}
-        whileInView={isMobile ? undefined : { opacity: 1, y: 0 }}
-        viewport={isMobile ? undefined : { once: true, margin: '-80px' }}
-        transition={isMobile ? undefined : { duration: 1, ease: [0.22, 1, 0.36, 1] }}
+        initial={{ opacity: 0, y: 65 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: false, margin: '-80px' }}
+        transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
         className="liquid-glass relative overflow-hidden rounded-3xl px-8 py-16 md:py-24 text-center border border-black/10 dark:border-white/10 bg-white/5 dark:bg-white/[0.01]"
       >
         {/* Radial Glow Overlay exactly as requested */}

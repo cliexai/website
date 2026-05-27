@@ -356,18 +356,6 @@ body {
   background: #000;
 }
 
-@media (max-width: 767px) {
-  .animate-shiny,
-  .animate-ping,
-  .animate-pulse,
-  .animate-bounce {
-    animation: none !important;
-  }
-  [style*="filter: url(#c3-noise)"] {
-    filter: none !important;
-  }
-}
-
 @media (max-width: 640px) {
   .c3-card {
     min-height: 480px;

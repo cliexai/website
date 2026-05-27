@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Mail, Briefcase, User, Phone, CheckCircle2, Sparkles, Send, Loader2 } from 'lucide-react';
-import { useIsMobile } from '../hooks/useIsMobile';
 
 export const LeadForm: React.FC = () => {
-  const isMobile = useIsMobile();
   const [formData, setFormData] = useState({
     fullName: '',
     businessName: '',
@@ -51,10 +49,10 @@ export const LeadForm: React.FC = () => {
   return (
     <section id="lead-form" className="max-w-2xl mx-auto px-6 py-20 md:py-28 relative z-10">
       <motion.div
-        initial={isMobile ? false : { opacity: 0, y: 55 }}
-        whileInView={isMobile ? undefined : { opacity: 1, y: 0 }}
-        viewport={isMobile ? undefined : { once: true, margin: '-60px' }}
-        transition={isMobile ? undefined : { duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+        initial={{ opacity: 0, y: 55 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: false, margin: '-60px' }}
+        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
         className="liquid-glass rounded-3xl p-8 border border-black/10 dark:border-white/10 bg-white/5 dark:bg-white/[0.01]"
       >
         <div className="text-center mb-8">
