@@ -9,11 +9,6 @@ import { FloatingAgent } from './components/FloatingAgent';
 import { X, ChevronUp } from 'lucide-react';
 
 const VIDEO_SRC = 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260508_064122_c4750c0e-7476-4b44-94a2-a85a65c63bf2.mp4';
-const VIDEO_STYLE: React.CSSProperties = {
-  filter: 'hue-rotate(88deg) saturate(1.35) brightness(0.85)',
-  maskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)',
-  WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)',
-};
 
 const VoiceDashboardMockup = lazy(() => import('./components/VoiceDashboardMockup').then(m => ({ default: m.VoiceDashboardMockup })));
 const Features = lazy(() => import('./components/Features').then(m => ({ default: m.Features })));
@@ -34,46 +29,17 @@ const SectionFallback: React.FC<{ height?: string }> = ({ height = 'py-40' }) =>
 
 const MainLayout: React.FC = () => {
   const lenisRef = useRef<Lenis | null>(null);
-  const [activeVid, setActiveVid] = useState(1);
   const [showNotice, setShowNotice] = useState(true);
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const vid1Ref = useRef<HTMLVideoElement>(null);
-  const vid2Ref = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    const vid1 = vid1Ref.current;
-    const vid2 = vid2Ref.current;
-    if (!vid1 || !vid2) return;
-
-    const MARGIN = 0.6;
-
-    const onTime = () => {
-      if (activeVid === 1 && vid1.duration && vid1.currentTime >= vid1.duration - MARGIN) {
-        vid2.currentTime = 0;
-        vid2.play();
-        setActiveVid(2);
-      } else if (activeVid === 2 && vid2.duration && vid2.currentTime >= vid2.duration - MARGIN) {
-        vid1.currentTime = 0;
-        vid1.play();
-        setActiveVid(1);
-      }
-    };
-
-    vid1.addEventListener('timeupdate', onTime);
-    vid2.addEventListener('timeupdate', onTime);
-    return () => {
-      vid1.removeEventListener('timeupdate', onTime);
-      vid2.removeEventListener('timeupdate', onTime);
-    };
-  }, [activeVid]);
-
-  useEffect(() => {
+    const isMobile = window.innerWidth < 768;
     const lenis = new Lenis({
-      duration: 1.5,
+      duration: isMobile ? 0.8 : 1.2,
       easing: (t) => 1 - Math.pow(1 - t, 3),
-      smoothWheel: true,
-      wheelMultiplier: 1,
-      touchMultiplier: 1.5,
+      smoothWheel: !isMobile,
+      wheelMultiplier: isMobile ? 0.8 : 1,
+      touchMultiplier: isMobile ? 0.5 : 0.8,
     });
     lenisRef.current = lenis;
     setLenisInstance(lenis);
@@ -115,25 +81,15 @@ const MainLayout: React.FC = () => {
         </defs>
       </svg>
 
-      {/* Global background video — dual-layer crossfade for seamless loop */}
+      {/* Global background video — lightweight single loop */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         <video
-          ref={vid1Ref}
           autoPlay
+          loop
           muted
           playsInline
           preload="auto"
-          className="absolute inset-0 w-full h-full object-cover pointer-events-none transition-opacity duration-[1s] ease-in-out"
-          style={{ ...VIDEO_STYLE, opacity: activeVid === 1 ? 0.55 : 0 }}
-          src={VIDEO_SRC}
-        />
-        <video
-          ref={vid2Ref}
-          muted
-          playsInline
-          preload="auto"
-          className="absolute inset-0 w-full h-full object-cover pointer-events-none transition-opacity duration-[1s] ease-in-out"
-          style={{ ...VIDEO_STYLE, opacity: activeVid === 2 ? 0.55 : 0 }}
+          className="w-full h-full object-cover pointer-events-none opacity-55"
           src={VIDEO_SRC}
         />
       </div>
@@ -207,7 +163,7 @@ const MainLayout: React.FC = () => {
       {showScrollTop && (
         <button
           onClick={() => getLenisInstance()?.scrollTo(0, { duration: 1.2 })}
-          className="fixed bottom-4 left-4 z-[60] w-10 h-10 rounded-full border border-black/15 dark:border-white/10 bg-white/80 dark:bg-[#0c0c0c]/80 backdrop-blur-xl text-black/60 dark:text-white/60 hover:text-brand dark:hover:text-brand hover:border-brand/40 shadow-lg flex items-center justify-center active:scale-90 transition-all"
+          className={`fixed left-4 z-[60] w-10 h-10 rounded-full border border-black/15 dark:border-white/10 bg-white/80 dark:bg-[#0c0c0c]/80 backdrop-blur-xl text-black/60 dark:text-white/60 hover:text-brand dark:hover:text-brand hover:border-brand/40 shadow-lg flex items-center justify-center active:scale-90 transition-all ${showNotice ? 'bottom-14' : 'bottom-4'}`}
           aria-label="Scroll to top"
         >
           <ChevronUp className="w-5 h-5" />

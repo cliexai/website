@@ -19,7 +19,7 @@ export const Navbar: React.FC = () => {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 border-b border-black/10 dark:border-white/10 bg-white/70 dark:bg-[#0c0c0c]/70 backdrop-blur-xl backdrop-saturate-150">
+      <header className="fixed top-0 left-0 right-0 z-50 border-b border-black/10 dark:border-white/10 bg-white/85 dark:bg-[#0c0c0c]/85 md:bg-white/70 md:dark:bg-[#0c0c0c]/70 md:backdrop-blur-xl md:backdrop-saturate-150">
         <motion.nav
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
