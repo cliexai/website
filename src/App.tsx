@@ -7,6 +7,7 @@ import { Hero } from './components/Hero';
 import { MacOSBar } from './components/MacOSBar';
 import { FloatingAgent } from './components/FloatingAgent';
 import { X, ChevronUp } from 'lucide-react';
+import { useIsMobile } from './hooks/useIsMobile';
 
 const VIDEO_SRC = 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260508_064122_c4750c0e-7476-4b44-94a2-a85a65c63bf2.mp4';
 
@@ -28,21 +29,13 @@ const SectionFallback: React.FC<{ height?: string }> = ({ height = 'py-40' }) =>
 );
 
 const MainLayout: React.FC = () => {
+  const isMobile = useIsMobile();
   const lenisRef = useRef<Lenis | null>(null);
   const [activeVid, setActiveVid] = useState(1);
   const [showNotice, setShowNotice] = useState(true);
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
   const vid1Ref = useRef<HTMLVideoElement>(null);
   const vid2Ref = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    const mq = window.matchMedia('(max-width: 767px)');
-    setIsMobile(mq.matches);
-    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
-    mq.addEventListener('change', handler);
-    return () => mq.removeEventListener('change', handler);
-  }, []);
 
   useEffect(() => {
     const vid1 = vid1Ref.current;

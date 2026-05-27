@@ -1,7 +1,9 @@
 import React from 'react';
 import { motion } from 'motion/react';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 export const LogoCloud: React.FC = () => {
+  const isMobile = useIsMobile();
   const logos = ['Linear', 'Vercel', 'Figma', 'Stripe', 'Ramp', 'Notion', 'Loom', 'Arc'];
 
   const containerVariants = {
@@ -9,14 +11,14 @@ export const LogoCloud: React.FC = () => {
     show: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.06,
+        staggerChildren: isMobile ? 0.03 : 0.06,
       },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 35 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as const } },
+    hidden: { opacity: 0, y: isMobile ? 18 : 35 },
+    show: { opacity: 1, y: 0, transition: { duration: isMobile ? 0.35 : 0.7, ease: [0.22, 1, 0.36, 1] as const } },
   };
 
   return (
@@ -30,7 +32,7 @@ export const LogoCloud: React.FC = () => {
           variants={containerVariants}
           initial="hidden"
           whileInView="show"
-          viewport={{ once: false, margin: '-100px' }}
+          viewport={{ once: isMobile, margin: isMobile ? '-50px' : '-100px' }}
           className="mt-10 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-6 items-center"
         >
           {logos.map((logo) => (

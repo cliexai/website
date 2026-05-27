@@ -1,8 +1,10 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { Shield, Sparkles, Zap, Users } from 'lucide-react';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 export const Stats: React.FC = () => {
+  const isMobile = useIsMobile();
   const statsList = [
     {
       icon: <Users className="w-5 h-5 text-brand" />,
@@ -36,10 +38,10 @@ export const Stats: React.FC = () => {
         {statsList.map((stat, i) => (
           <motion.div
             key={i}
-            initial={{ opacity: 0, y: 50 }}
+            initial={{ opacity: 0, y: isMobile ? 25 : 50 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, margin: '-60px' }}
-            transition={{ duration: 0.8, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] }}
+            viewport={{ once: isMobile, margin: isMobile ? '-30px' : '-60px' }}
+            transition={{ duration: isMobile ? 0.35 : 0.8, delay: i * (isMobile ? 0.06 : 0.12), ease: [0.22, 1, 0.36, 1] }}
             className="liquid-glass rounded-2xl p-6 border border-black/5 dark:border-white/5 bg-white/5 dark:bg-white/[0.01] flex flex-col justify-between hover:border-brand/40 transition-colors group"
           >
             <div className="flex items-center justify-between mb-4">
