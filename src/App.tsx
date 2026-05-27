@@ -29,8 +29,38 @@ const SectionFallback: React.FC<{ height?: string }> = ({ height = 'py-40' }) =>
 
 const MainLayout: React.FC = () => {
   const lenisRef = useRef<Lenis | null>(null);
+  const [activeVid, setActiveVid] = useState(1);
   const [showNotice, setShowNotice] = useState(true);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const vid1Ref = useRef<HTMLVideoElement>(null);
+  const vid2Ref = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const vid1 = vid1Ref.current;
+    const vid2 = vid2Ref.current;
+    if (!vid1 || !vid2) return;
+
+    const MARGIN = 0.6;
+
+    const onTime = () => {
+      if (activeVid === 1 && vid1.duration && vid1.currentTime >= vid1.duration - MARGIN) {
+        vid2.currentTime = 0;
+        vid2.play();
+        setActiveVid(2);
+      } else if (activeVid === 2 && vid2.duration && vid2.currentTime >= vid2.duration - MARGIN) {
+        vid1.currentTime = 0;
+        vid1.play();
+        setActiveVid(1);
+      }
+    };
+
+    vid1.addEventListener('timeupdate', onTime);
+    vid2.addEventListener('timeupdate', onTime);
+    return () => {
+      vid1.removeEventListener('timeupdate', onTime);
+      vid2.removeEventListener('timeupdate', onTime);
+    };
+  }, [activeVid]);
 
   useEffect(() => {
     const isMobile = window.innerWidth < 768;
@@ -81,21 +111,39 @@ const MainLayout: React.FC = () => {
         </defs>
       </svg>
 
-      {/* Global background video — lightweight single loop */}
+      {/* Global background video — dual crossfade for seamless loop */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         <video
+          ref={vid1Ref}
           autoPlay
-          loop
           muted
           playsInline
           preload="auto"
-          className="w-full h-full object-cover pointer-events-none opacity-55"
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none transition-opacity duration-[1s] ease-in-out"
+          style={{
+            opacity: activeVid === 1 ? 0.55 : 0,
+            maskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)',
+          }}
+          src={VIDEO_SRC}
+        />
+        <video
+          ref={vid2Ref}
+          muted
+          playsInline
+          preload="auto"
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none transition-opacity duration-[1s] ease-in-out"
+          style={{
+            opacity: activeVid === 2 ? 0.55 : 0,
+            maskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)',
+          }}
           src={VIDEO_SRC}
         />
       </div>
 
-      {/* Purple ambient overlay to reinforce brand hue */}
-      <div className="fixed inset-0 z-0 pointer-events-none mix-blend-overlay bg-brand/10 dark:bg-brand/15" />
+      {/* Purple color overlay — shifts video hues to brand purple via GPU blend (zero per-frame cost) */}
+      <div className="fixed inset-0 z-0 pointer-events-none mix-blend-color bg-brand/60" />
 
       {/* Cinematic Frosted Glass Gradient Overlay - Ensures high readability in both modes */}
       <div className="fixed inset-0 z-0 pointer-events-none bg-gradient-to-b from-white/50 via-white/65 to-white/75 dark:from-[#0c0c0c]/60 dark:via-[#0c0c0c]/72 dark:to-[#0c0c0c]/82 transition-colors duration-300" />
