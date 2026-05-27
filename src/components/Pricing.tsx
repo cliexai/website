@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Check } from 'lucide-react';
 import { scrollToId } from '../utils/smoothScroll';
-import { useIsMobile } from '../hooks/useIsMobile';
 
 interface Plan {
   tier: string;
@@ -14,7 +13,6 @@ interface Plan {
 }
 
 export const Pricing: React.FC = () => {
-  const isMobile = useIsMobile();
   const [yearly, setYearly] = useState(false);
 
   const plans: Plan[] = [
@@ -78,15 +76,6 @@ export const Pricing: React.FC = () => {
           </filter>
         </defs>
       </svg>
-
-      {!isMobile && (
-        <div className="c3-watermark-container">
-          <div className="c3-watermark-main select-none">
-            <span className="c3-watermark-line-1">Your Business.</span>
-            <span className="c3-watermark-line-2">Never Misses a Call.</span>
-          </div>
-        </div>
-      )}
 
       {/* Yearly Toggle wrap */}
       <div className="c3-toggle-wrap">
