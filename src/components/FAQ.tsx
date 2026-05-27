@@ -78,7 +78,7 @@ export const FAQ: React.FC = () => {
                     transition={{ duration: 0.3, ease: 'easeInOut' }}
                   >
                     <div className="px-6 pb-6 pt-1 border-t border-black/5 dark:border-white/5">
-                      <p className="text-xs md:text-sm text-black/60 dark:text-white/60 leading-[1.6] font-medium">
+                      <p className="text-sm text-black/60 dark:text-white/60 leading-[1.6] font-medium">
                         {faq.answer}
                       </p>
                     </div>

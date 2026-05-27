@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState, lazy, Suspense } from 'react';
 import Lenis from 'lenis';
-import { handleDocumentAnchorClick, setLenisInstance } from './utils/smoothScroll';
+import { handleDocumentAnchorClick, setLenisInstance, getLenisInstance } from './utils/smoothScroll';
 import { ThemeProvider } from './components/ThemeContext';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { MacOSBar } from './components/MacOSBar';
 import { FloatingAgent } from './components/FloatingAgent';
-import { X } from 'lucide-react';
+import { X, ChevronUp } from 'lucide-react';
 
 const VIDEO_SRC = 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260508_064122_c4750c0e-7476-4b44-94a2-a85a65c63bf2.mp4';
 const VIDEO_STYLE: React.CSSProperties = {
@@ -36,6 +36,7 @@ const MainLayout: React.FC = () => {
   const lenisRef = useRef<Lenis | null>(null);
   const [activeVid, setActiveVid] = useState(1);
   const [showNotice, setShowNotice] = useState(true);
+  const [showScrollTop, setShowScrollTop] = useState(false);
   const vid1Ref = useRef<HTMLVideoElement>(null);
   const vid2Ref = useRef<HTMLVideoElement>(null);
 
@@ -85,8 +86,15 @@ const MainLayout: React.FC = () => {
 
     document.addEventListener('click', handleDocumentAnchorClick, true);
 
+    const handleScroll = () => {
+      const scrollPercent = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+      setShowScrollTop(scrollPercent > 0.45);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
     return () => {
       document.removeEventListener('click', handleDocumentAnchorClick, true);
+      window.removeEventListener('scroll', handleScroll);
       lenis.destroy();
       setLenisInstance(null);
     };
@@ -194,6 +202,17 @@ const MainLayout: React.FC = () => {
           <Footer />
         </Suspense>
       </div>
+
+      {/* Scroll-to-top button */}
+      {showScrollTop && (
+        <button
+          onClick={() => getLenisInstance()?.scrollTo(0, { duration: 1.2 })}
+          className="fixed bottom-4 left-4 z-[60] w-10 h-10 rounded-full border border-black/15 dark:border-white/10 bg-white/80 dark:bg-[#0c0c0c]/80 backdrop-blur-xl text-black/60 dark:text-white/60 hover:text-brand dark:hover:text-brand hover:border-brand/40 shadow-lg flex items-center justify-center active:scale-90 transition-all"
+          aria-label="Scroll to top"
+        >
+          <ChevronUp className="w-5 h-5" />
+        </button>
+      )}
 
       {/* Under-construction notice */}
       {showNotice && (

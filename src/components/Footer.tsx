@@ -122,7 +122,7 @@ export const Footer: React.FC = () => {
                 href={soc.href}
                 target="_blank"
                 rel="noreferrer"
-                className="w-8 h-8 rounded-full border border-black/15 dark:border-white/10 bg-black/5 dark:bg-white/5 flex items-center justify-center text-black/60 dark:text-white/60 hover:text-brand dark:hover:text-white hover:border-brand/40 dark:hover:border-brand/40 active:scale-90 transition-all"
+                className="w-10 h-10 rounded-full border border-black/15 dark:border-white/10 bg-black/5 dark:bg-white/5 flex items-center justify-center text-black/60 dark:text-white/60 hover:text-brand dark:hover:text-white hover:border-brand/40 dark:hover:border-brand/40 active:scale-90 transition-all"
                 title={soc.label}
                 aria-label={soc.label}
               >

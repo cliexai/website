@@ -85,7 +85,7 @@ body {
 /* Custom Pricing CSS (Section 8) */
 .c3-pricing-section {
   position: relative;
-  padding: 80px 20px 100px;
+  padding: 80px 24px 100px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -351,6 +351,15 @@ body {
   background: #000;
 }
 
+@media (max-width: 640px) {
+  .c3-card {
+    min-height: 480px;
+  }
+  .c3-watermark-main {
+    font-size: 2.5rem;
+  }
+}
+
 @media (max-width: 1024px) {
   .c3-watermark-main {
     font-size: 3.5rem;
@@ -366,7 +375,7 @@ body {
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     transform: none;
-    width: 100vw;
+    width: 100%;
     padding: 0 20px;
     gap: 16px;
     scrollbar-width: none;

@@ -172,28 +172,26 @@ export const VoiceDashboardMockup: React.FC = () => {
                   : 'text-black/55 dark:text-white/50 hover:text-black dark:hover:text-white'
               }`}
             >
-              Call History Dashboard
+              <span className="hidden sm:inline">Call History </span>Dashboard
             </button>
             <button
               onClick={() => setActiveTab('sandbox')}
-              className={`px-3 py-1 rounded-md text-[11px] font-semibold transition-all flex items-center gap-1 ${
-                activeTab === 'sandbox'
-                  ? 'bg-white dark:bg-white/10 text-black dark:text-white shadow-sm'
-                  : 'text-black/55 dark:text-white/50 hover:text-black dark:hover:text-white'
+              className={`px-4 py-1.5 rounded-lg text-[11px] font-semibold transition-all flex items-center gap-1.5 ${
+                activeTab === 'sandbox' ? 'bg-black/10 dark:bg-white/10 text-black dark:text-white' : 'text-black/50 dark:text-white/50 hover:text-black dark:hover:text-white'
               }`}
             >
               <Sparkles className="w-3 h-3 text-brand" />
-              Live Agent Sandbox
+              <span className="hidden sm:inline">Live Agent </span>Sandbox
             </button>
           </div>
 
-          <div className="text-[11px] text-black/40 dark:text-white/40 font-mono">
+          <div className="hidden md:block text-[11px] text-black/40 dark:text-white/40 font-mono">
             dashboard_v2.0.ts
           </div>
         </div>
 
         {/* Dashboard Grid Content */}
-        <div className="grid grid-cols-12 h-[520px]">
+        <div className="grid grid-cols-12 h-auto md:h-[520px]">
           {/* Sidebar (col-span-3) */}
           <div className="col-span-12 md:col-span-3 border-r border-black/5 dark:border-white/5 bg-black/[0.02] dark:bg-black/30 p-4 flex flex-col justify-between overflow-y-auto">
             <div className="flex flex-col gap-5">
@@ -203,7 +201,7 @@ export const VoiceDashboardMockup: React.FC = () => {
                 className="w-full rounded-lg bg-brand text-white text-xs font-semibold px-3 py-2.5 flex items-center gap-2 justify-center shadow-lg shadow-brand/20 hover:bg-brand/90 active:scale-95 transition-all"
               >
                 <Sparkles className="w-4 h-4" />
-                <span>Test Live Agent</span>
+                <span className="hidden sm:inline">Test Live Agent</span><span className="sm:hidden">Test</span>
               </button>
 
               {/* Navigation Items */}

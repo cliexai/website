@@ -89,7 +89,7 @@ export const LeadForm: React.FC = () => {
                     placeholder="Marcus Vance"
                     value={formData.fullName}
                     onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                    className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl py-3 pl-10 pr-4 text-xs text-black dark:text-white outline-none focus:border-brand/40 dark:focus:border-brand/40 transition-colors placeholder-black/45 dark:placeholder-white/45"
+                    className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl py-3 pl-10 pr-4 text-base sm:text-xs text-black dark:text-white outline-none focus:border-brand/40 dark:focus:border-brand/40 transition-colors placeholder-black/45 dark:placeholder-white/45"
                   />
                 </div>
               </div>
@@ -107,7 +107,7 @@ export const LeadForm: React.FC = () => {
                     placeholder="Mario's Pizza"
                     value={formData.businessName}
                     onChange={(e) => setFormData({ ...formData, businessName: e.target.value })}
-                    className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl py-3 pl-10 pr-4 text-xs text-black dark:text-white outline-none focus:border-brand/40 dark:focus:border-brand/40 transition-colors placeholder-black/45 dark:placeholder-white/45"
+                    className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl py-3 pl-10 pr-4 text-base sm:text-xs text-black dark:text-white outline-none focus:border-brand/40 dark:focus:border-brand/40 transition-colors placeholder-black/45 dark:placeholder-white/45"
                   />
                 </div>
               </div>
@@ -125,7 +125,7 @@ export const LeadForm: React.FC = () => {
                     placeholder="marcus@marios.com"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl py-3 pl-10 pr-4 text-xs text-black dark:text-white outline-none focus:border-brand/40 dark:focus:border-brand/40 transition-colors placeholder-black/45 dark:placeholder-white/45"
+                    className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl py-3 pl-10 pr-4 text-base sm:text-xs text-black dark:text-white outline-none focus:border-brand/40 dark:focus:border-brand/40 transition-colors placeholder-black/45 dark:placeholder-white/45"
                   />
                 </div>
               </div>
@@ -143,7 +143,7 @@ export const LeadForm: React.FC = () => {
                     placeholder="+1 (555) 019-2834"
                     value={formData.whatsappNumber}
                     onChange={(e) => setFormData({ ...formData, whatsappNumber: e.target.value })}
-                    className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl py-3 pl-10 pr-4 text-xs text-black dark:text-white outline-none focus:border-brand/40 dark:focus:border-brand/40 transition-colors placeholder-black/45 dark:placeholder-white/45"
+                    className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl py-3 pl-10 pr-4 text-base sm:text-xs text-black dark:text-white outline-none focus:border-brand/40 dark:focus:border-brand/40 transition-colors placeholder-black/45 dark:placeholder-white/45"
                   />
                 </div>
               </div>
@@ -157,7 +157,7 @@ export const LeadForm: React.FC = () => {
                   id="selected-package"
                   value={formData.selectedPackage}
                   onChange={(e) => setFormData({ ...formData, selectedPackage: e.target.value })}
-                  className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl py-3 px-3.5 text-xs text-black dark:text-white outline-none focus:border-brand/40 dark:focus:border-brand/40 transition-colors"
+                  className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl py-3 px-3.5 text-base sm:text-xs text-black dark:text-white outline-none focus:border-brand/40 dark:focus:border-brand/40 transition-colors"
                 >
                   <option className="bg-white dark:bg-[#0c0c0c] text-black dark:text-white" value="Starter">Starter Plan ($100/mo + $50 setup)</option>
                   <option className="bg-white dark:bg-[#0c0c0c] text-black dark:text-white" value="Growth">Growth Plan ($150/mo + $100 setup)</option>

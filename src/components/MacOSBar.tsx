@@ -59,7 +59,7 @@ export const MacOSBar: React.FC = () => {
         {/* Right tools and dynamic clock */}
         <div className="flex items-center gap-4">
           <Search className="w-3.5 h-3.5 cursor-pointer hover:text-black dark:hover:text-white transition-colors" />
-          <span className="tabular-nums font-medium">{time || 'Wed May 27 9:29 AM'}</span>
+          <span className="tabular-nums font-medium"><span className="hidden sm:inline">{time?.split(' ').slice(0, 2).join(' ') || 'Wed May 27'} </span>{time?.split(' ').slice(2).join(' ') || '9:29 AM'}</span>
         </div>
       </div>
     </motion.div>

@@ -21,7 +21,7 @@ export const Hero: React.FC = () => {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-        className="text-5xl md:text-8xl font-black tracking-tight leading-[0.95] flex flex-col items-center"
+        className="text-3xl sm:text-5xl md:text-8xl font-black tracking-tight leading-[0.95] flex flex-col items-center"
       >
         <span className="text-black dark:text-white">Your Business.</span>
         <span

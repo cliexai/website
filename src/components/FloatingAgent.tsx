@@ -90,7 +90,7 @@ export const FloatingAgent: React.FC = () => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="w-[330px] sm:w-[360px] h-[480px] rounded-3xl border border-black/10 dark:border-white/10 bg-white/95 dark:bg-[#0e1014]/95 backdrop-blur-2xl shadow-2xl flex flex-col overflow-hidden mb-4 mr-0"
+            className="w-[calc(100vw-48px)] sm:w-[360px] h-[480px] max-h-[80vh] rounded-3xl border border-black/10 dark:border-white/10 bg-white/95 dark:bg-[#0e1014]/95 backdrop-blur-2xl shadow-2xl flex flex-col overflow-hidden mb-4 mr-0"
           >
             {/* Header */}
             <div className="bg-brand text-white p-4 flex items-center justify-between shadow-lg shadow-brand/10 shrink-0">
@@ -212,7 +212,7 @@ export const FloatingAgent: React.FC = () => {
                   onChange={(e) => setInputText(e.target.value)}
                   placeholder={isListening ? 'Listening to voice...' : 'Type message to agent...'}
                   disabled={isListening}
-                  className="flex-1 bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 rounded-full px-4 py-2 text-xs text-black dark:text-white outline-none focus:border-brand/45 dark:focus:border-brand/40 placeholder-black/45 dark:placeholder-white/45"
+                  className="flex-1 bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 rounded-full px-4 py-2 text-base sm:text-xs text-black dark:text-white outline-none focus:border-brand/45 dark:focus:border-brand/40 placeholder-black/45 dark:placeholder-white/45"
                 />
                 <button
                   type="submit"
