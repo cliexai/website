@@ -428,6 +428,33 @@ html, body {
   background: #000;
 }
 
+@media (max-width: 767px) {
+  .c3-watermark-container {
+    display: none;
+  }
+  .c3-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    padding: 0;
+    overflow: visible;
+    scroll-snap-type: none;
+    transform: none;
+  }
+  .c3-card {
+    flex: none;
+    width: 100%;
+    max-width: 400px;
+    scroll-snap-align: none;
+  }
+  .c3-toggle-wrap {
+    justify-content: center;
+    padding-right: 0;
+  }
+}
+
 @media (max-width: 1024px) {
   .c3-watermark-main {
     font-size: 3.5rem;
