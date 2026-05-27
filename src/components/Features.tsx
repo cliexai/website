@@ -2,8 +2,10 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { SectionEyebrow } from './SharedPrimitives';
 import { Phone, Calendar, ShoppingCart, Info, UserCheck, BarChart3, ArrowRight } from 'lucide-react';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 export const Features: React.FC = () => {
+  const isMobile = useIsMobile();
   const benefits = [
     {
       icon: <Phone className="w-5 h-5 text-brand" />,
@@ -78,10 +80,10 @@ export const Features: React.FC = () => {
       <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-start">
         {/* Left Column */}
         <motion.div
-          initial={{ opacity: 0, y: 60 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false, margin: '-80px' }}
-          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+          initial={isMobile ? false : { opacity: 0, y: 60 }}
+          whileInView={isMobile ? undefined : { opacity: 1, y: 0 }}
+          viewport={isMobile ? undefined : { once: true, margin: '-80px' }}
+          transition={isMobile ? undefined : { duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
           className="flex flex-col items-start"
         >
           <SectionEyebrow label="Autopilot" tag="AI-native" />
@@ -128,10 +130,10 @@ export const Features: React.FC = () => {
 
         {/* Right Column (Triage Liquid Glass Card) */}
         <motion.div
-          initial={{ opacity: 0, y: 55 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false, margin: '-80px' }}
-          transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          initial={isMobile ? false : { opacity: 0, y: 55 }}
+          whileInView={isMobile ? undefined : { opacity: 1, y: 0 }}
+          viewport={isMobile ? undefined : { once: true, margin: '-80px' }}
+          transition={isMobile ? undefined : { duration: 0.9, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           className="w-full"
         >
           <div className="liquid-glass rounded-2xl p-5 border border-black/5 dark:border-white/10">

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, Search, Play, Phone, PhoneCall, Volume2, Mic, MoreHorizontal, BarChart2, Clock } from 'lucide-react';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 interface CallScenario {
   id: string;
@@ -18,6 +19,7 @@ interface CallScenario {
 }
 
 export const VoiceDashboardMockup: React.FC = () => {
+  const isMobile = useIsMobile();
   const scenarios: CallScenario[] = [
     {
       id: '1',
@@ -148,10 +150,10 @@ export const VoiceDashboardMockup: React.FC = () => {
   return (
     <section id="demo" className="max-w-7xl mx-auto px-6 py-16 md:py-24 relative z-10">
       <motion.div
-        initial={{ opacity: 0, y: 70 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: false, margin: '-100px' }}
-        transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+        initial={isMobile ? false : { opacity: 0, y: 70 }}
+        whileInView={isMobile ? undefined : { opacity: 1, y: 0 }}
+        viewport={isMobile ? undefined : { once: true, margin: '-100px' }}
+        transition={isMobile ? undefined : { duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
         className="relative rounded-2xl overflow-hidden border border-black/10 dark:border-white/10 bg-white/90 dark:bg-[#0e1014]/90 backdrop-blur-2xl shadow-2xl flex flex-col"
       >
         {/* macOS Style Title Bar */}
@@ -432,10 +434,10 @@ export const VoiceDashboardMockup: React.FC = () => {
               /* Live Agent Sandbox Console (col-span-9) */
               <motion.div
                 key="sandbox-tab"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
+                initial={isMobile ? false : { opacity: 0, x: 20 }}
+                animate={isMobile ? undefined : { opacity: 1, x: 0 }}
+                exit={isMobile ? undefined : { opacity: 0, x: -20 }}
+                transition={isMobile ? undefined : { duration: 0.3 }}
                 className="col-span-12 md:col-span-9 p-5 flex flex-col justify-between h-full bg-black/[0.01] dark:bg-black/10"
               >
                 {/* Top sandbox banner */}

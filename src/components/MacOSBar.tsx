@@ -2,14 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { LogoMark } from './SharedPrimitives';
 import { Search } from 'lucide-react';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 export const MacOSBar: React.FC = () => {
+  const isMobile = useIsMobile();
   const [time, setTime] = useState('');
 
   useEffect(() => {
     const updateTime = () => {
       const date = new Date();
-      // Format as "Wed May 27 1:09 PM" (or similar)
       const options: Intl.DateTimeFormatOptions = {
         weekday: 'short',
         month: 'short',
@@ -28,11 +29,16 @@ export const MacOSBar: React.FC = () => {
 
   const menuItems = ['File', 'Edit', 'View', 'Go', 'Window', 'Help'];
 
+  const MotionDiv = isMobile ? 'div' : motion.div;
+  const animProps = !isMobile ? {
+    initial: { opacity: 0 } as const,
+    animate: { opacity: 1 } as const,
+    transition: { duration: 0.8, delay: 0.9 } as const,
+  } : {};
+
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.8, delay: 0.9 }}
+    <MotionDiv
+      {...animProps}
       className="w-full h-10 bg-black/5 dark:bg-black/40 backdrop-blur-md border-t border-b border-black/10 dark:border-white/10 relative z-10"
     >
       <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between text-xs text-black/70 dark:text-white/70 font-medium">
@@ -62,6 +68,6 @@ export const MacOSBar: React.FC = () => {
           <span className="tabular-nums font-medium"><span className="hidden sm:inline">{time?.split(' ').slice(0, 2).join(' ') || 'Wed May 27'} </span>{time?.split(' ').slice(2).join(' ') || '9:29 AM'}</span>
         </div>
       </div>
-    </motion.div>
+    </MotionDiv>
   );
 };

@@ -1,7 +1,9 @@
 import React from 'react';
 import { motion } from 'motion/react';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 export const Testimonials: React.FC = () => {
+  const isMobile = useIsMobile();
   const reviews = [
     {
       quote: "ClieX AI gave our operations team fifteen hours of their week back. It answers calls and processes orders like a support representative from the future.",
@@ -38,10 +40,10 @@ export const Testimonials: React.FC = () => {
         {reviews.map((rev, idx) => (
           <motion.figure
             key={idx}
-            initial={{ opacity: 0, y: 55 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, margin: '-60px' }}
-            transition={{ duration: 0.9, delay: idx * 0.12, ease: [0.22, 1, 0.36, 1] }}
+            initial={isMobile ? false : { opacity: 0, y: 55 }}
+            whileInView={isMobile ? undefined : { opacity: 1, y: 0 }}
+            viewport={isMobile ? undefined : { once: true, margin: '-60px' }}
+            transition={isMobile ? undefined : { duration: 0.9, delay: idx * 0.12, ease: [0.22, 1, 0.36, 1] }}
             className="liquid-glass rounded-2xl p-6 border border-black/5 dark:border-white/10 bg-white/5 dark:bg-white/[0.01] hover:border-brand/40 transition-colors flex flex-col justify-between"
           >
             <blockquote className="text-sm text-black/85 dark:text-white/80 leading-[1.7] italic font-medium">
