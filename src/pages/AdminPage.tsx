@@ -7,6 +7,11 @@ import {
 } from 'lucide-react';
 import { supabase, type Lead } from '../lib/supabaseClient';
 
+// ─── Admin access control ──────────────────────────────────────
+// Only this email address is permitted to access the admin dashboard.
+// All other accounts are rejected and signed out immediately.
+const ADMIN_EMAIL = 'cliexai@gmail.com';
+
 // ─── Plan badge colours ────────────────────────────────────────
 const PLAN_COLORS: Record<string, string> = {
   Starter: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
@@ -27,14 +32,25 @@ const LoginForm: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
     setLoading(true);
     setError(null);
 
-    const { error: authError } = await supabase.auth.signInWithPassword({ email, password });
-    setLoading(false);
+    const { data, error: authError } = await supabase.auth.signInWithPassword({ email, password });
 
     if (authError) {
+      setLoading(false);
       setError(authError.message);
-    } else {
-      onLogin();
+      return;
     }
+
+    // ── Admin email guard ──────────────────────────────────────
+    // Immediately sign out and reject if this is not the admin account.
+    if (data.user?.email !== ADMIN_EMAIL) {
+      await supabase.auth.signOut();
+      setLoading(false);
+      setError('Access denied. This portal is restricted to administrators only.');
+      return;
+    }
+
+    setLoading(false);
+    onLogin();
   };
 
   return (
@@ -194,9 +210,22 @@ const Dashboard: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
 
   const handleDelete = async (id: string) => {
     if (!window.confirm('Delete this lead? This cannot be undone.')) return;
+
+    // ── Re-verify admin session before any destructive operation ──
+    const { data: sessionData } = await supabase.auth.getSession();
+    if (sessionData.session?.user?.email !== ADMIN_EMAIL) {
+      setError('Session invalid. Please log in again.');
+      await supabase.auth.signOut();
+      return;
+    }
+
     setDeletingId(id);
-    await supabase.from('leads').delete().eq('id', id);
-    setLeads((prev) => prev.filter((l) => l.id !== id));
+    const { error: deleteError } = await supabase.from('leads').delete().eq('id', id);
+    if (deleteError) {
+      setError('Failed to delete lead: ' + deleteError.message);
+    } else {
+      setLeads((prev) => prev.filter((l) => l.id !== id));
+    }
     setDeletingId(null);
   };
 
@@ -439,24 +468,37 @@ const Dashboard: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
 
 // ─── Root admin page (handles auth state) ─────────────────────
 export const AdminPage: React.FC = () => {
-  const [session, setSession] = useState<boolean | null>(null); // null = loading
+  // null = still loading, true = admin verified, false = not logged in
+  const [adminVerified, setAdminVerified] = useState<boolean | null>(null);
 
   useEffect(() => {
-    // Check if already logged in
+    // Check existing session and verify admin email
     supabase.auth.getSession().then(({ data }) => {
-      setSession(!!data.session);
+      const email = data.session?.user?.email;
+      if (email === ADMIN_EMAIL) {
+        setAdminVerified(true);
+      } else {
+        // If a non-admin is somehow logged in via another flow, sign them out
+        if (data.session) supabase.auth.signOut();
+        setAdminVerified(false);
+      }
     });
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, sess) => {
-      setSession(!!sess);
+      const email = sess?.user?.email;
+      if (email === ADMIN_EMAIL) {
+        setAdminVerified(true);
+      } else {
+        setAdminVerified(false);
+      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
   // Loading spinner while checking auth
-  if (session === null) {
+  if (adminVerified === null) {
     return (
       <div className="min-h-screen bg-[#0c0c0c] flex items-center justify-center">
         <Loader2 className="w-6 h-6 text-brand animate-spin" />
@@ -464,9 +506,9 @@ export const AdminPage: React.FC = () => {
     );
   }
 
-  if (!session) {
-    return <LoginForm onLogin={() => setSession(true)} />;
+  if (!adminVerified) {
+    return <LoginForm onLogin={() => setAdminVerified(true)} />;
   }
 
-  return <Dashboard onLogout={() => setSession(false)} />;
+  return <Dashboard onLogout={() => setAdminVerified(false)} />;
 };
