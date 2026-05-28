@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import {
   LogOut, RefreshCw, Search, Trash2, Users,
   Mail, Phone, Briefcase, Calendar, TrendingUp,
-  ShieldCheck, Eye, EyeOff, Loader2, AlertCircle,
-  Smartphone, KeyRound, Copy, Check,
+  ShieldCheck, Loader2, AlertCircle,
+  Smartphone, KeyRound,
 } from 'lucide-react';
 import { supabase, type Lead } from '../lib/supabaseClient';
 
@@ -12,7 +12,7 @@ import { supabase, type Lead } from '../lib/supabaseClient';
 const ADMIN_EMAIL = 'cliexai@gmail.com';
 
 // ─── View state machine ────────────────────────────────────────
-type AdminView = 'loading' | 'login' | 'mfa-enroll' | 'mfa-verify' | 'dashboard';
+type AdminView = 'loading' | 'login' | 'verify-otp' | 'dashboard';
 
 // ─── Plan badge colours ────────────────────────────────────────
 const PLAN_COLORS: Record<string, string> = {
@@ -55,14 +55,12 @@ const ErrorBanner: React.FC<{ msg: string | null }> = ({ msg }) => (
   </AnimatePresence>
 );
 
-// ─── Step 1 – Password login ───────────────────────────────────
+// ─── Step 1 – Email Entry ──────────────────────────────────────
 interface LoginFormProps {
-  onSuccess: (factorId: string | null) => void; // null = no MFA enrolled yet
+  onSuccess: (email: string) => void;
 }
 const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
   const [email, setEmail]     = useState('');
-  const [password, setPassword] = useState('');
-  const [showPw, setShowPw]   = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError]     = useState<string | null>(null);
 
@@ -71,41 +69,43 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
     setLoading(true);
     setError(null);
 
-    const { data, error: authError } = await supabase.auth.signInWithPassword({ email, password });
-
-    if (authError) { setLoading(false); setError(authError.message); return; }
-
     // Admin email guard
-    if (data.user?.email !== ADMIN_EMAIL) {
-      await supabase.auth.signOut();
+    if (email !== ADMIN_EMAIL) {
       setLoading(false);
       setError('Access denied. This portal is restricted to administrators only.');
       return;
     }
 
-    // Check if MFA is already enrolled
-    const { data: factors } = await supabase.auth.mfa.listFactors();
-    const totpFactor = factors?.totp?.find(f => f.status === 'verified');
+    // Send 6-digit OTP to the admin's email
+    const { error: otpError } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        shouldCreateUser: false, // Don't allow creating new users here
+      }
+    });
 
     setLoading(false);
-    // Pass factor ID if enrolled, null if we need to enroll first
-    onSuccess(totpFactor?.id ?? null);
+    
+    if (otpError) {
+      setError(otpError.message);
+      return;
+    }
+
+    onSuccess(email);
   };
 
   return (
     <AuthShell>
-      {/* Header */}
       <div className="text-center mb-8">
         <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-brand/10 border border-brand/20 mb-4">
           <ShieldCheck className="w-7 h-7 text-brand" />
         </div>
         <h1 className="text-2xl font-extrabold text-white tracking-tight">Admin Portal</h1>
-        <p className="text-xs text-white/40 mt-1 font-medium">ClieX AI · Internal Access Only</p>
+        <p className="text-xs text-white/40 mt-1 font-medium">ClieX AI · Secure Email Login</p>
       </div>
 
       <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-6 backdrop-blur-xl">
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          {/* Email */}
           <div className="flex flex-col gap-1.5">
             <label className="text-[10px] font-bold text-white/50 uppercase tracking-wider">Email</label>
             <div className="relative">
@@ -119,167 +119,29 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
             </div>
           </div>
 
-          {/* Password */}
-          <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] font-bold text-white/50 uppercase tracking-wider">Password</label>
-            <div className="relative">
-              <ShieldCheck className="w-4 h-4 text-white/30 absolute left-3 top-1/2 -translate-y-1/2" />
-              <input
-                type={showPw ? 'text' : 'password'} required value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-10 pr-10 text-sm text-white outline-none focus:border-brand/40 transition-colors placeholder-white/20"
-              />
-              <button type="button" onClick={() => setShowPw(!showPw)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors">
-                {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
-            </div>
-          </div>
-
           <ErrorBanner msg={error} />
 
           <button type="submit" disabled={loading}
             className="w-full bg-brand text-white font-semibold text-sm py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-brand/90 active:scale-[0.98] transition-all shadow-lg shadow-brand/20 mt-1 disabled:opacity-50">
-            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
-            {loading ? 'Authenticating...' : 'Continue'}
+            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4" />}
+            {loading ? 'Sending Code...' : 'Send Login Code'}
           </button>
         </form>
       </div>
-
-      {/* 2FA badge */}
       <p className="text-center text-[11px] text-white/25 mt-4 flex items-center justify-center gap-1.5">
-        <Smartphone className="w-3 h-3" /> 2-Factor Authentication enabled
+        <ShieldCheck className="w-3 h-3" /> Passwordless 2-Factor Authentication
       </p>
     </AuthShell>
   );
 };
 
-// ─── Step 2a – MFA Enrollment (first time only) ────────────────
-interface MfaEnrollProps {
+// ─── Step 2 – OTP Verification ─────────────────────────────────
+interface VerifyOtpProps {
+  email: string;
   onVerified: () => void;
   onCancel: () => void;
 }
-const MfaEnroll: React.FC<MfaEnrollProps> = ({ onVerified, onCancel }) => {
-  const [qrSvg, setQrSvg]       = useState<string | null>(null);
-  const [secret, setSecret]     = useState<string | null>(null);
-  const [factorId, setFactorId] = useState<string | null>(null);
-  const [code, setCode]         = useState('');
-  const [loading, setLoading]   = useState(false);
-  const [copied, setCopied]     = useState(false);
-  const [error, setError]       = useState<string | null>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    // Start enrollment – generates a new TOTP factor
-    (async () => {
-      const { data, error: enrollError } = await supabase.auth.mfa.enroll({
-        factorType: 'totp',
-        friendlyName: 'ClieX AI Admin',
-      });
-      if (enrollError || !data) { setError(enrollError?.message ?? 'Failed to start enrollment'); return; }
-      setQrSvg(data.totp.qr_code);
-      setSecret(data.totp.secret);
-      setFactorId(data.id);
-      setTimeout(() => inputRef.current?.focus(), 300);
-    })();
-  }, []);
-
-  const handleCopy = () => {
-    if (secret) { navigator.clipboard.writeText(secret); setCopied(true); setTimeout(() => setCopied(false), 2000); }
-  };
-
-  const handleVerify = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!factorId || code.length !== 6) return;
-    setLoading(true); setError(null);
-
-    const { error: verifyError } = await supabase.auth.mfa.challengeAndVerify({
-      factorId, code,
-    });
-
-    setLoading(false);
-    if (verifyError) { setError(verifyError.message); return; }
-    onVerified();
-  };
-
-  return (
-    <AuthShell>
-      <div className="text-center mb-6">
-        <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-brand/10 border border-brand/20 mb-4">
-          <Smartphone className="w-7 h-7 text-brand" />
-        </div>
-        <h1 className="text-2xl font-extrabold text-white tracking-tight">Set Up 2FA</h1>
-        <p className="text-xs text-white/40 mt-1">Scan the QR code with Google Authenticator or Authy</p>
-      </div>
-
-      <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-6 backdrop-blur-xl flex flex-col gap-5">
-        {/* QR Code */}
-        {qrSvg ? (
-          <div className="flex flex-col items-center gap-3">
-            <div
-              className="w-48 h-48 bg-white rounded-2xl p-2 flex items-center justify-center"
-              dangerouslySetInnerHTML={{ __html: qrSvg }}
-            />
-            <p className="text-[10px] text-white/30 text-center">
-              Can't scan? Use this secret key manually:
-            </p>
-            <button onClick={handleCopy}
-              className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white/60 hover:text-white hover:border-white/20 transition-all font-mono">
-              <span className="truncate max-w-[180px]">{secret}</span>
-              {copied ? <Check className="w-3.5 h-3.5 text-green-400 shrink-0" /> : <Copy className="w-3.5 h-3.5 shrink-0" />}
-            </button>
-          </div>
-        ) : (
-          <div className="flex items-center justify-center h-48">
-            <Loader2 className="w-6 h-6 text-brand animate-spin" />
-          </div>
-        )}
-
-        {/* Code entry */}
-        <form onSubmit={handleVerify} className="flex flex-col gap-3">
-          <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] font-bold text-white/50 uppercase tracking-wider">
-              Enter 6-digit code from your app
-            </label>
-            <div className="relative">
-              <KeyRound className="w-4 h-4 text-white/30 absolute left-3 top-1/2 -translate-y-1/2" />
-              <input
-                ref={inputRef}
-                type="text" inputMode="numeric" pattern="\d{6}" maxLength={6}
-                required value={code}
-                onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
-                placeholder="000000"
-                className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-sm text-white font-mono tracking-[0.3em] outline-none focus:border-brand/40 transition-colors placeholder-white/20 text-center"
-              />
-            </div>
-          </div>
-
-          <ErrorBanner msg={error} />
-
-          <button type="submit" disabled={loading || code.length !== 6 || !factorId}
-            className="w-full bg-brand text-white font-semibold text-sm py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-brand/90 active:scale-[0.98] transition-all shadow-lg shadow-brand/20 disabled:opacity-50">
-            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
-            {loading ? 'Verifying...' : 'Activate 2FA & Continue'}
-          </button>
-
-          <button type="button" onClick={onCancel}
-            className="text-xs text-white/30 hover:text-white/60 transition-colors text-center">
-            Cancel & sign out
-          </button>
-        </form>
-      </div>
-    </AuthShell>
-  );
-};
-
-// ─── Step 2b – MFA Code Verify (every login after enrollment) ──
-interface MfaVerifyProps {
-  factorId: string;
-  onVerified: () => void;
-  onCancel: () => void;
-}
-const MfaVerify: React.FC<MfaVerifyProps> = ({ factorId, onVerified, onCancel }) => {
+const VerifyOtpForm: React.FC<VerifyOtpProps> = ({ email, onVerified, onCancel }) => {
   const [code, setCode]       = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError]     = useState<string | null>(null);
@@ -292,10 +154,20 @@ const MfaVerify: React.FC<MfaVerifyProps> = ({ factorId, onVerified, onCancel })
     if (code.length !== 6) return;
     setLoading(true); setError(null);
 
-    const { error: verifyError } = await supabase.auth.mfa.challengeAndVerify({ factorId, code });
+    const { error: verifyError } = await supabase.auth.verifyOtp({
+      email,
+      token: code,
+      type: 'email'
+    });
 
     setLoading(false);
-    if (verifyError) { setError('Invalid code. Please try again.'); setCode(''); return; }
+    
+    if (verifyError) { 
+      setError('Invalid or expired code. Please try again.'); 
+      setCode(''); 
+      return; 
+    }
+    
     onVerified();
   };
 
@@ -303,17 +175,17 @@ const MfaVerify: React.FC<MfaVerifyProps> = ({ factorId, onVerified, onCancel })
     <AuthShell>
       <div className="text-center mb-8">
         <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-brand/10 border border-brand/20 mb-4">
-          <Smartphone className="w-7 h-7 text-brand" />
+          <KeyRound className="w-7 h-7 text-brand" />
         </div>
-        <h1 className="text-2xl font-extrabold text-white tracking-tight">2-Factor Auth</h1>
-        <p className="text-xs text-white/40 mt-1">Open your authenticator app and enter the 6-digit code</p>
+        <h1 className="text-2xl font-extrabold text-white tracking-tight">Check Your Email</h1>
+        <p className="text-xs text-white/40 mt-1">We sent a 6-digit code to {email}</p>
       </div>
 
       <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-6 backdrop-blur-xl">
         <form onSubmit={handleVerify} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
             <label className="text-[10px] font-bold text-white/50 uppercase tracking-wider">
-              Authenticator code
+              6-Digit Code
             </label>
             <div className="relative">
               <KeyRound className="w-4 h-4 text-white/30 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -338,7 +210,7 @@ const MfaVerify: React.FC<MfaVerifyProps> = ({ factorId, onVerified, onCancel })
 
           <button type="button" onClick={onCancel}
             className="text-xs text-white/30 hover:text-white/60 transition-colors text-center">
-            ← Back to login
+            ← Back to email entry
           </button>
         </form>
       </div>
@@ -401,12 +273,6 @@ const Dashboard: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
     const { data: sessionData } = await supabase.auth.getSession();
     if (sessionData.session?.user?.email !== ADMIN_EMAIL) {
       setError('Session invalid. Please log in again.');
-      await supabase.auth.signOut();
-      return;
-    }
-    const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-    if (aal?.currentLevel !== 'aal2') {
-      setError('MFA verification required. Please log in again.');
       await supabase.auth.signOut();
       return;
     }
@@ -590,8 +456,8 @@ const Dashboard: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
 
 // ─── Root admin page – state machine controller ────────────────
 export const AdminPage: React.FC = () => {
-  const [view, setView]           = useState<AdminView>('loading');
-  const [mfaFactorId, setMfaFactorId] = useState<string | null>(null);
+  const [view, setView]       = useState<AdminView>('loading');
+  const [userEmail, setUserEmail] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -605,35 +471,14 @@ export const AdminPage: React.FC = () => {
         return;
       }
 
-      // Check MFA assurance level
-      const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-      if (aal?.currentLevel === 'aal2') {
-        // Already fully verified
-        setView('dashboard');
-      } else if (aal?.nextLevel === 'aal2') {
-        // Password done but MFA not verified yet – go straight to verify
-        const { data: factors } = await supabase.auth.mfa.listFactors();
-        const factor = factors?.totp?.find(f => f.status === 'verified');
-        if (factor) { setMfaFactorId(factor.id); setView('mfa-verify'); }
-        else { setView('login'); }
-      } else {
-        setView('login');
-      }
+      // Already logged in as admin
+      setView('dashboard');
     })();
   }, []);
 
-  const handleLoginSuccess = (factorId: string | null) => {
-    if (factorId) {
-      setMfaFactorId(factorId);
-      setView('mfa-verify');
-    } else {
-      setView('mfa-enroll');
-    }
-  };
-
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    setMfaFactorId(null);
+    setUserEmail(null);
     setView('login');
   };
 
@@ -646,24 +491,15 @@ export const AdminPage: React.FC = () => {
   }
 
   if (view === 'login') {
-    return <LoginForm onSuccess={handleLoginSuccess} />;
+    return <LoginForm onSuccess={(email) => { setUserEmail(email); setView('verify-otp'); }} />;
   }
 
-  if (view === 'mfa-enroll') {
+  if (view === 'verify-otp' && userEmail) {
     return (
-      <MfaEnroll
+      <VerifyOtpForm
+        email={userEmail}
         onVerified={() => setView('dashboard')}
-        onCancel={handleSignOut}
-      />
-    );
-  }
-
-  if (view === 'mfa-verify' && mfaFactorId) {
-    return (
-      <MfaVerify
-        factorId={mfaFactorId}
-        onVerified={() => setView('dashboard')}
-        onCancel={handleSignOut}
+        onCancel={() => setView('login')}
       />
     );
   }
