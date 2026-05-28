@@ -2,12 +2,16 @@ import React, { useEffect, useRef, useState, lazy, Suspense } from 'react';
 import Lenis from 'lenis';
 import { handleDocumentAnchorClick, setLenisInstance, getLenisInstance } from './utils/smoothScroll';
 import { ThemeProvider } from './components/ThemeContext';
+import { AuthProvider } from './contexts/AuthContext';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { MacOSBar } from './components/MacOSBar';
 import { FloatingAgent } from './components/FloatingAgent';
 import { X, ChevronUp } from 'lucide-react';
 import { useIsMobile } from './hooks/useIsMobile';
+import { AdminPage } from './pages/AdminPage';
+import { LoginPage } from './pages/LoginPage';
+import { PortalPage } from './pages/PortalPage';
 
 const VIDEO_SRC = 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260508_064122_c4750c0e-7476-4b44-94a2-a85a65c63bf2.mp4';
 
@@ -244,10 +248,17 @@ const MainLayout: React.FC = () => {
 };
 
 function App() {
+  const path = window.location.pathname;
+
   return (
-    <ThemeProvider>
-      <MainLayout />
-    </ThemeProvider>
+    <AuthProvider>
+      <ThemeProvider>
+        {path === '/admin'  ? <AdminPage />  :
+         path === '/login'  ? <LoginPage />  :
+         path === '/portal' ? <PortalPage /> :
+         <MainLayout />}
+      </ThemeProvider>
+    </AuthProvider>
   );
 }
 
