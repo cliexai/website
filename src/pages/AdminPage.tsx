@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import {
   LogOut, RefreshCw, Search, Trash2, Users,
   Mail, Phone, Briefcase, Calendar, TrendingUp,
-  ShieldCheck, Loader2, AlertCircle,
-  Smartphone, KeyRound,
+  ShieldCheck, Eye, EyeOff, Loader2, AlertCircle,
+  KeyRound,
 } from 'lucide-react';
 import { supabase, type Lead } from '../lib/supabaseClient';
 
@@ -12,7 +12,7 @@ import { supabase, type Lead } from '../lib/supabaseClient';
 const ADMIN_EMAIL = 'cliexai@gmail.com';
 
 // ─── View state machine ────────────────────────────────────────
-type AdminView = 'loading' | 'login' | 'verify-otp' | 'dashboard';
+type AdminView = 'loading' | 'login' | 'verify-code' | 'dashboard';
 
 // ─── Plan badge colours ────────────────────────────────────────
 const PLAN_COLORS: Record<string, string> = {
@@ -55,57 +55,83 @@ const ErrorBanner: React.FC<{ msg: string | null }> = ({ msg }) => (
   </AnimatePresence>
 );
 
-// ─── Step 1 – Email Entry ──────────────────────────────────────
+// ════════════════════════════════════════════════════════════════
+// STEP 1 — Email + Password login
+// After password is verified, we sign out and send an OTP code
+// to the user's email. This is the "2FA" step.
+// ════════════════════════════════════════════════════════════════
 interface LoginFormProps {
-  onSuccess: (email: string) => void;
+  onCodeSent: (email: string) => void;
 }
-const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
-  const [email, setEmail]     = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError]     = useState<string | null>(null);
+const LoginForm: React.FC<LoginFormProps> = ({ onCodeSent }) => {
+  const [email, setEmail]       = useState('');
+  const [password, setPassword] = useState('');
+  const [showPw, setShowPw]     = useState(false);
+  const [loading, setLoading]   = useState(false);
+  const [error, setError]       = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
-    // Admin email guard
-    if (email !== ADMIN_EMAIL) {
+    // ── 1. Verify the password ──────────────────────────────
+    const { data, error: authError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (authError) {
+      setLoading(false);
+      setError(authError.message);
+      return;
+    }
+
+    // ── 2. Admin-only guard ─────────────────────────────────
+    if (data.user?.email !== ADMIN_EMAIL) {
+      await supabase.auth.signOut();
       setLoading(false);
       setError('Access denied. This portal is restricted to administrators only.');
       return;
     }
 
-    // Send 6-digit OTP to the admin's email
+    // ── 3. Password OK → sign out, then send email OTP ──────
+    // We sign out so the user can't access the dashboard until
+    // they also verify the email code (true 2FA).
+    await supabase.auth.signOut();
+
     const { error: otpError } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        shouldCreateUser: false, // Don't allow creating new users here
-      }
+        shouldCreateUser: false,
+      },
     });
 
     setLoading(false);
-    
+
     if (otpError) {
-      setError(otpError.message);
+      setError('Failed to send verification code: ' + otpError.message);
       return;
     }
 
-    onSuccess(email);
+    // Move to the code-entry screen
+    onCodeSent(email);
   };
 
   return (
     <AuthShell>
+      {/* Header */}
       <div className="text-center mb-8">
         <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-brand/10 border border-brand/20 mb-4">
           <ShieldCheck className="w-7 h-7 text-brand" />
         </div>
         <h1 className="text-2xl font-extrabold text-white tracking-tight">Admin Portal</h1>
-        <p className="text-xs text-white/40 mt-1 font-medium">ClieX AI · Secure Email Login</p>
+        <p className="text-xs text-white/40 mt-1 font-medium">ClieX AI · Internal Access Only</p>
       </div>
 
       <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-6 backdrop-blur-xl">
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          {/* Email */}
           <div className="flex flex-col gap-1.5">
             <label className="text-[10px] font-bold text-white/50 uppercase tracking-wider">Email</label>
             <div className="relative">
@@ -119,29 +145,50 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
             </div>
           </div>
 
+          {/* Password */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[10px] font-bold text-white/50 uppercase tracking-wider">Password</label>
+            <div className="relative">
+              <ShieldCheck className="w-4 h-4 text-white/30 absolute left-3 top-1/2 -translate-y-1/2" />
+              <input
+                type={showPw ? 'text' : 'password'} required value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-10 pr-10 text-sm text-white outline-none focus:border-brand/40 transition-colors placeholder-white/20"
+              />
+              <button type="button" onClick={() => setShowPw(!showPw)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors">
+                {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
+          </div>
+
           <ErrorBanner msg={error} />
 
           <button type="submit" disabled={loading}
             className="w-full bg-brand text-white font-semibold text-sm py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-brand/90 active:scale-[0.98] transition-all shadow-lg shadow-brand/20 mt-1 disabled:opacity-50">
-            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4" />}
-            {loading ? 'Sending Code...' : 'Send Login Code'}
+            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
+            {loading ? 'Verifying...' : 'Continue'}
           </button>
         </form>
       </div>
+
       <p className="text-center text-[11px] text-white/25 mt-4 flex items-center justify-center gap-1.5">
-        <ShieldCheck className="w-3 h-3" /> Passwordless 2-Factor Authentication
+        <ShieldCheck className="w-3 h-3" /> 2-Factor Authentication via Email
       </p>
     </AuthShell>
   );
 };
 
-// ─── Step 2 – OTP Verification ─────────────────────────────────
-interface VerifyOtpProps {
+// ════════════════════════════════════════════════════════════════
+// STEP 2 — Enter the 6-digit code that was emailed
+// ════════════════════════════════════════════════════════════════
+interface VerifyCodeProps {
   email: string;
   onVerified: () => void;
-  onCancel: () => void;
+  onBack: () => void;
 }
-const VerifyOtpForm: React.FC<VerifyOtpProps> = ({ email, onVerified, onCancel }) => {
+const VerifyCodeForm: React.FC<VerifyCodeProps> = ({ email, onVerified, onBack }) => {
   const [code, setCode]       = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError]     = useState<string | null>(null);
@@ -152,22 +199,30 @@ const VerifyOtpForm: React.FC<VerifyOtpProps> = ({ email, onVerified, onCancel }
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
     if (code.length !== 6) return;
-    setLoading(true); setError(null);
+    setLoading(true);
+    setError(null);
 
-    const { error: verifyError } = await supabase.auth.verifyOtp({
+    const { data, error: verifyError } = await supabase.auth.verifyOtp({
       email,
       token: code,
-      type: 'email'
+      type: 'email',
     });
 
     setLoading(false);
-    
-    if (verifyError) { 
-      setError('Invalid or expired code. Please try again.'); 
-      setCode(''); 
-      return; 
+
+    if (verifyError) {
+      setError('Invalid or expired code. Check your email and try again.');
+      setCode('');
+      return;
     }
-    
+
+    // Final admin guard — make sure this session is actually the admin
+    if (data.user?.email !== ADMIN_EMAIL) {
+      await supabase.auth.signOut();
+      setError('Access denied.');
+      return;
+    }
+
     onVerified();
   };
 
@@ -177,15 +232,18 @@ const VerifyOtpForm: React.FC<VerifyOtpProps> = ({ email, onVerified, onCancel }
         <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-brand/10 border border-brand/20 mb-4">
           <KeyRound className="w-7 h-7 text-brand" />
         </div>
-        <h1 className="text-2xl font-extrabold text-white tracking-tight">Check Your Email</h1>
-        <p className="text-xs text-white/40 mt-1">We sent a 6-digit code to {email}</p>
+        <h1 className="text-2xl font-extrabold text-white tracking-tight">Verify Your Identity</h1>
+        <p className="text-xs text-white/40 mt-1.5 leading-relaxed">
+          We sent a <span className="text-white/60 font-semibold">6-digit verification code</span> to
+        </p>
+        <p className="text-xs text-brand font-semibold mt-0.5">{email}</p>
       </div>
 
       <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-6 backdrop-blur-xl">
         <form onSubmit={handleVerify} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
             <label className="text-[10px] font-bold text-white/50 uppercase tracking-wider">
-              6-Digit Code
+              Verification Code
             </label>
             <div className="relative">
               <KeyRound className="w-4 h-4 text-white/30 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -208,20 +266,24 @@ const VerifyOtpForm: React.FC<VerifyOtpProps> = ({ email, onVerified, onCancel }
             {loading ? 'Verifying...' : 'Verify & Access Dashboard'}
           </button>
 
-          <button type="button" onClick={onCancel}
+          <button type="button" onClick={onBack}
             className="text-xs text-white/30 hover:text-white/60 transition-colors text-center">
-            ← Back to email entry
+            ← Back to login
           </button>
         </form>
       </div>
+
+      <p className="text-center text-[10px] text-white/20 mt-4">
+        Didn't get the code? Check your spam folder.
+      </p>
     </AuthShell>
   );
 };
 
 // ─── Stats card ────────────────────────────────────────────────
-const StatCard: React.FC<{ label: string; value: string | number; icon: React.ReactNode; color: string }> = ({
-  label, value, icon, color,
-}) => (
+const StatCard: React.FC<{
+  label: string; value: string | number; icon: React.ReactNode; color: string;
+}> = ({ label, value, icon, color }) => (
   <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-5 flex items-center gap-4">
     <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${color}`}>
       {icon}
@@ -269,7 +331,7 @@ const Dashboard: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
   const handleDelete = async (id: string) => {
     if (!window.confirm('Delete this lead? This cannot be undone.')) return;
 
-    // Re-verify admin session + MFA assurance level before any destructive op
+    // Re-verify admin session before destructive op
     const { data: sessionData } = await supabase.auth.getSession();
     if (sessionData.session?.user?.email !== ADMIN_EMAIL) {
       setError('Session invalid. Please log in again.');
@@ -310,9 +372,8 @@ const Dashboard: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
               <ShieldCheck className="w-4 h-4 text-brand" />
             </div>
             <span className="font-bold text-sm text-white tracking-tight">ClieX AI Admin</span>
-            {/* 2FA badge */}
             <span className="hidden sm:flex items-center gap-1 text-[10px] text-green-400 bg-green-400/10 border border-green-400/20 rounded-full px-2 py-0.5">
-              <Smartphone className="w-3 h-3" /> 2FA Active
+              <ShieldCheck className="w-3 h-3" /> 2FA Active
             </span>
           </div>
           <div className="flex items-center gap-3">
@@ -456,7 +517,7 @@ const Dashboard: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
 
 // ─── Root admin page – state machine controller ────────────────
 export const AdminPage: React.FC = () => {
-  const [view, setView]       = useState<AdminView>('loading');
+  const [view, setView]         = useState<AdminView>('loading');
   const [userEmail, setUserEmail] = useState<string | null>(null);
 
   useEffect(() => {
@@ -465,13 +526,12 @@ export const AdminPage: React.FC = () => {
       const session = sessionData.session;
 
       if (!session || session.user.email !== ADMIN_EMAIL) {
-        // Sign out any non-admin session
         if (session) await supabase.auth.signOut();
         setView('login');
         return;
       }
 
-      // Already logged in as admin
+      // Already have a valid admin session
       setView('dashboard');
     })();
   }, []);
@@ -491,15 +551,17 @@ export const AdminPage: React.FC = () => {
   }
 
   if (view === 'login') {
-    return <LoginForm onSuccess={(email) => { setUserEmail(email); setView('verify-otp'); }} />;
+    return (
+      <LoginForm onCodeSent={(email) => { setUserEmail(email); setView('verify-code'); }} />
+    );
   }
 
-  if (view === 'verify-otp' && userEmail) {
+  if (view === 'verify-code' && userEmail) {
     return (
-      <VerifyOtpForm
+      <VerifyCodeForm
         email={userEmail}
         onVerified={() => setView('dashboard')}
-        onCancel={() => setView('login')}
+        onBack={() => setView('login')}
       />
     );
   }
