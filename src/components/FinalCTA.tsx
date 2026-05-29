@@ -8,13 +8,13 @@ import { useIsMobile } from '../hooks/useIsMobile';
 export const FinalCTA: React.FC = () => {
   const isMobile = useIsMobile();
   return (
-    <section className="max-w-7xl mx-auto px-6 py-20 md:py-32 relative z-10">
+    <section className="w-full h-full">
       <motion.div
         initial={{ opacity: 0, y: isMobile ? 32 : 65 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: isMobile, margin: isMobile ? '-40px' : '-80px' }}
         transition={{ duration: isMobile ? 0.45 : 1, ease: [0.22, 1, 0.36, 1] }}
-        className="liquid-glass relative overflow-hidden rounded-3xl px-8 py-16 md:py-24 text-center border border-black/10 dark:border-white/10 bg-white/5 dark:bg-white/[0.01]"
+        className="liquid-glass relative overflow-hidden rounded-3xl px-8 py-16 md:py-24 text-center border border-black/10 dark:border-white/10 bg-white/5 dark:bg-white/[0.01] h-full flex flex-col justify-center"
       >
         {/* Radial Glow Overlay exactly as requested */}
         <div
@@ -38,7 +38,7 @@ export const FinalCTA: React.FC = () => {
 
           {/* Action buttons */}
           <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <AppleButton label="Try Live Demo" onClick={() => scrollToId('lead-form')} />
+            <AppleButton label="Try for free" onClick={() => window.location.href = '/signup'} />
             <button
               onClick={() => scrollToId('lead-form')}
               className="group rounded-full border border-black/15 dark:border-white/15 text-black dark:text-white text-sm font-semibold px-6 py-3.5 hover:bg-black/5 dark:hover:bg-white/5 active:scale-95 transition-all backdrop-blur-md flex items-center gap-1.5"

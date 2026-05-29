@@ -128,7 +128,7 @@ html, body {
 /* Custom Pricing CSS (Section 8) - Optimized for GPU */
 .c3-pricing-section {
   position: relative;
-  padding: 80px 20px 100px;
+  padding: 40px 20px 50px;
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -133,11 +133,11 @@ export const Navbar: React.FC = () => {
                 href="/login"
                 className="text-sm font-semibold text-black/70 dark:text-white/70 hover:text-brand dark:hover:text-brand transition-colors px-2 py-1"
               >
-                Sign In
+                Sign In / Sign Up
               </a>
             )}
 
-            <AppleButton label="Try Live Demo" onClick={() => scrollToId('lead-form')} />
+            <AppleButton label="Try for free" onClick={() => window.location.href = '/signup'} />
           </div>
 
           {/* Mobile controls */}
@@ -231,12 +231,9 @@ export const Navbar: React.FC = () => {
 
               <div className="mt-1">
                 <AppleButton
-                  label="Try Live Demo"
+                  label="Try for free"
                   full
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    scrollToId('lead-form');
-                  }}
+                  onClick={() => window.location.href = '/signup'}
                 />
               </div>
             </div>

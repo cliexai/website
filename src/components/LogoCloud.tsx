@@ -22,7 +22,7 @@ export const LogoCloud: React.FC = () => {
   };
 
   return (
-    <section className="max-w-7xl mx-auto px-6 py-16 md:py-20 relative z-10 border-t border-black/5 dark:border-white/5">
+    <section className="max-w-7xl mx-auto px-6 py-8 md:py-12 relative z-10 border-t border-black/5 dark:border-white/5">
       <div className="text-center">
         <h3 className="text-[10px] uppercase tracking-widest text-black/45 dark:text-white/40 font-extrabold select-none">
           Trusted by the world's most thoughtful teams

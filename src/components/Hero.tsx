@@ -50,8 +50,8 @@ export const Hero: React.FC = () => {
         className="mt-10 flex flex-col sm:flex-row items-center gap-4 justify-center"
       >
         <AppleButton
-          label="Try Live Demo"
-          onClick={() => scrollToId('lead-form')}
+          label="Try for free"
+          onClick={() => window.location.href = '/signup'}
         />
         <a
           href="#pricing"

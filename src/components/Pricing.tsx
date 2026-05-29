@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Check } from 'lucide-react';
-import { scrollToId } from '../utils/smoothScroll';
 
 interface Plan {
   tier: string;
@@ -126,11 +125,7 @@ export const Pricing: React.FC = () => {
               
               <button
                 onClick={() => {
-                  scrollToId('lead-form');
-                  const packageInput = document.getElementById('selected-package') as HTMLSelectElement;
-                  if (packageInput) {
-                    packageInput.value = plan.tier;
-                  }
+                  window.location.href = `/get-started?plan=${encodeURIComponent(plan.tier)}`;
                 }}
                 className="c3-btn"
               >

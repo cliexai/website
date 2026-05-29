@@ -34,7 +34,7 @@ export const FAQ: React.FC = () => {
   ];
 
   return (
-    <section id="faq" className="max-w-4xl mx-auto px-6 py-20 md:py-28 relative z-10 border-t border-black/10 dark:border-white/10">
+    <section id="faq" className="max-w-4xl mx-auto px-6 py-10 md:py-16 relative z-10 border-t border-black/10 dark:border-white/10">
       <div className="text-center mb-16">
         <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight text-black dark:text-white">
           Frequently Asked Questions

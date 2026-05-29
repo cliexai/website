@@ -76,7 +76,7 @@ export const Features: React.FC = () => {
   ];
 
   return (
-    <section id="services" className="max-w-7xl mx-auto px-6 py-20 md:py-28 relative z-10">
+    <section id="services" className="max-w-7xl mx-auto px-6 py-10 md:py-16 relative z-10">
       <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-start">
         {/* Left Column */}
         <motion.div

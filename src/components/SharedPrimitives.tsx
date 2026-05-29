@@ -36,7 +36,7 @@ interface AppleButtonProps {
 }
 
 export const AppleButton: React.FC<AppleButtonProps> = ({
-  label = 'Try Live Demo',
+  label = 'Try for free',
   full = false,
   onClick,
   className = '',

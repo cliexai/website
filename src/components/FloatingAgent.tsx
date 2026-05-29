@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { MessageSquare, X, Send, Mic, Sparkles, PhoneCall, Loader2 } from 'lucide-react';
+import { LogoMark } from './SharedPrimitives';
 
 interface ChatMessage {
   speaker: 'agent' | 'user';
@@ -12,7 +13,7 @@ export const FloatingAgent: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       speaker: 'agent',
-      text: "Hi there! I am the ClieX AI Assistant. How can I help power your communications today? Ask me about booking, orders, or pricing!"
+      text: "Hi there! I am Alex, the ClieX AI Assistant. How can I help power your communications today? Ask me about booking, orders, or pricing!"
     }
   ]);
   const [inputText, setInputText] = useState('');
@@ -102,7 +103,7 @@ export const FloatingAgent: React.FC = () => {
                 </div>
                 <div>
                   <h4 className="text-xs font-bold leading-tight flex items-center gap-1">
-                    <span>ClieX Live Agent</span>
+                    <span>Ask Alex</span>
                     <Sparkles className="w-3 h-3 text-amber-300" />
                   </h4>
                   <p className="text-[9px] text-white/70 font-semibold tracking-wide">
@@ -129,7 +130,7 @@ export const FloatingAgent: React.FC = () => {
                   }`}
                 >
                   <span className="text-[7.5px] font-bold text-black/35 dark:text-white/35 uppercase mb-0.5 tracking-wider">
-                    {msg.speaker === 'agent' ? 'ClieX AI Agent' : 'You (Sandbox Caller)'}
+                    {msg.speaker === 'agent' ? 'Alex (AI)' : 'You (Sandbox Caller)'}
                   </span>
                   <p
                     className={`text-[11px] leading-relaxed max-w-[85%] rounded-xl p-2.5 font-medium ${
@@ -145,7 +146,7 @@ export const FloatingAgent: React.FC = () => {
               {isTyping && (
                 <div className="flex flex-col items-start">
                   <span className="text-[7.5px] font-bold text-black/35 dark:text-white/35 uppercase mb-0.5 tracking-wider">
-                    ClieX AI Agent
+                    Alex (AI)
                   </span>
                   <div className="bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 rounded-xl px-4 py-2.5 rounded-tl-none flex gap-1 items-center">
                     <span className="w-1.5 h-1.5 bg-black/40 dark:bg-white/40 rounded-full animate-bounce" />
@@ -231,11 +232,22 @@ export const FloatingAgent: React.FC = () => {
         onClick={() => setIsOpen(!isOpen)}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="w-14 h-14 rounded-full bg-brand text-white flex items-center justify-center shadow-2xl shadow-brand/30 relative"
+        className={`rounded-full shadow-2xl flex items-center justify-center relative transition-all duration-300 ${
+          isOpen 
+            ? 'w-14 h-14 bg-brand text-white shadow-brand/30' 
+            : 'h-12 px-5 bg-[#0f172a] text-white shadow-black/40 border border-white/10 gap-2.5'
+        }`}
         aria-label="Toggle chat widget"
       >
         <span className="absolute inset-0 rounded-full bg-brand opacity-20 animate-ping pointer-events-none" />
-        {isOpen ? <X className="w-6 h-6" /> : <MessageSquare className="w-6 h-6" />}
+        {isOpen ? (
+          <X className="w-6 h-6" />
+        ) : (
+          <>
+            <LogoMark className="w-5 h-5 text-brand drop-shadow-[0_0_8px_rgba(139,92,246,0.6)]" />
+            <span className="text-[14px] font-bold tracking-wide">Ask Alex</span>
+          </>
+        )}
       </motion.button>
     </div>
   );

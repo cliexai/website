@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { LogoMark } from '../components/SharedPrimitives';
 import { useAuth } from '../contexts/AuthContext';
 import { Loader2, ShieldCheck, Lock } from 'lucide-react';
+import { ThemeBackground } from '../components/ThemeBackground';
 
 // Google brand SVG
 const GoogleIcon: React.FC<{ className?: string }> = ({ className = 'w-5 h-5' }) => (
@@ -45,21 +46,8 @@ export const LoginPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#0c0c0c] flex items-center justify-center p-6 relative overflow-hidden">
-      {/* Ambient glows */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-brand/10 rounded-full blur-[150px]" />
-        <div className="absolute bottom-0 right-1/4 w-[350px] h-[300px] bg-brand/5 rounded-full blur-[100px]" />
-      </div>
-
-      {/* Grid pattern overlay */}
-      <div
-        className="fixed inset-0 pointer-events-none opacity-[0.03]"
-        style={{
-          backgroundImage: 'linear-gradient(white 1px, transparent 1px), linear-gradient(90deg, white 1px, transparent 1px)',
-          backgroundSize: '48px 48px',
-        }}
-      />
+    <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden bg-white dark:bg-[#0c0c0c]">
+      <ThemeBackground />
 
       <motion.div
         initial={{ opacity: 0, y: 32 }}
@@ -90,6 +78,35 @@ export const LoginPage: React.FC = () => {
 
         {/* Card */}
         <div className="bg-white/[0.04] border border-white/[0.08] rounded-2xl p-6 backdrop-blur-xl shadow-2xl shadow-black/40">
+          
+          <form onSubmit={(e) => { e.preventDefault(); window.location.href = '/portal'; }} className="space-y-4 mb-5">
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-white/70">Email</label>
+              <input required type="email" placeholder="john@example.com" className="w-full bg-[#161616] border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand/50 focus:border-brand/50 transition-all text-white placeholder:text-white/30" />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-white/70">Password</label>
+              <input required type="password" placeholder="••••••••" className="w-full bg-[#161616] border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand/50 focus:border-brand/50 transition-all text-white placeholder:text-white/30" />
+            </div>
+
+            <button type="submit" className="w-full mt-2 bg-brand hover:bg-brand-light text-white font-semibold py-3 rounded-xl transition-all shadow-[0_0_15px_rgba(139,92,246,0.3)] hover:shadow-[0_0_25px_rgba(139,92,246,0.5)] active:scale-[0.98]">
+              Sign In
+            </button>
+          </form>
+
+          {/* Divider */}
+          <div className="relative my-5">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-white/[0.08]" />
+            </div>
+            <div className="relative flex justify-center">
+              <span className="bg-[#141414] px-3 text-[10px] text-white/40 font-semibold uppercase tracking-widest rounded-full">
+                or
+              </span>
+            </div>
+          </div>
+
           {/* Google Sign-in Button */}
           <motion.button
             onClick={handleSignIn}
@@ -104,39 +121,14 @@ export const LoginPage: React.FC = () => {
             }
             {signingIn ? 'Redirecting to Google...' : 'Continue with Google'}
           </motion.button>
-
-          {/* Divider */}
-          <div className="relative my-5">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-white/[0.08]" />
-            </div>
-            <div className="relative flex justify-center">
-              <span className="bg-transparent px-3 text-[10px] text-white/25 font-semibold uppercase tracking-widest">
-                Secured by
-              </span>
-            </div>
-          </div>
-
-          {/* Trust badges */}
-          <div className="flex items-center justify-center gap-4">
-            {TRUST_BADGES.map((b) => (
-              <div
-                key={b.text}
-                className="flex items-center gap-1.5 text-[11px] text-white/30 font-medium"
-              >
-                <span className="text-brand/60">{b.icon}</span>
-                {b.text}
-              </div>
-            ))}
-          </div>
         </div>
 
         {/* Footer note */}
-        <p className="text-center text-[11px] text-white/20 mt-5 leading-relaxed">
+        <p className="text-center text-[12px] text-white/40 mt-6 leading-relaxed">
           New to ClieX?{' '}
-          <span className="text-brand/50">
-            Google sign-in automatically creates your account.
-          </span>
+          <a href="/signup" className="text-brand font-semibold hover:underline">
+            Create an account
+          </a>
         </p>
 
         <div className="text-center mt-6">

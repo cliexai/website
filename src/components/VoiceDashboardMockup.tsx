@@ -148,7 +148,7 @@ export const VoiceDashboardMockup: React.FC = () => {
   };
 
   return (
-    <section id="demo" className="max-w-7xl mx-auto px-6 py-16 md:py-24 relative z-10">
+    <section id="demo" className="max-w-7xl mx-auto px-6 py-10 md:py-16 relative z-10">
       <motion.div
         initial={{ opacity: 0, y: isMobile ? 35 : 70 }}
         whileInView={{ opacity: 1, y: 0 }}

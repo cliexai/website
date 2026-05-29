@@ -23,12 +23,20 @@ export const LeadForm: React.FC = () => {
   const recaptchaContainerRef = useRef<HTMLDivElement>(null);
   const widgetId = useRef<number | null>(null);
 
-  const [formData, setFormData] = useState({
-    fullName: '',
-    businessName: '',
-    email: '',
-    whatsappNumber: '',
-    selectedPackage: 'Growth',
+  const [formData, setFormData] = useState(() => {
+    let defaultPlan = 'Growth';
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const plan = params.get('plan');
+      if (plan) defaultPlan = plan;
+    }
+    return {
+      fullName: '',
+      businessName: '',
+      email: '',
+      whatsappNumber: '',
+      selectedPackage: defaultPlan,
+    };
   });
 
   const [loading, setLoading] = useState(false);
@@ -129,25 +137,14 @@ export const LeadForm: React.FC = () => {
   };
 
   return (
-    <section id="lead-form" className="max-w-2xl mx-auto px-6 py-20 md:py-28 relative z-10">
+    <section id="lead-form" className="w-full">
       <motion.div
         initial={{ opacity: 0, y: isMobile ? 28 : 55 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: isMobile, margin: isMobile ? '-30px' : '-60px' }}
         transition={{ duration: isMobile ? 0.4 : 0.9, ease: [0.22, 1, 0.36, 1] }}
-        className="liquid-glass rounded-3xl p-8 border border-black/10 dark:border-white/10 bg-white/5 dark:bg-white/[0.01]"
+        className="w-full"
       >
-        <div className="text-center mb-8">
-          <span className="p-2 bg-brand/10 text-brand rounded-full inline-flex mb-4">
-            <Sparkles className="w-5 h-5 text-brand" />
-          </span>
-          <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-black dark:text-white">
-            Secure Your AI Agent
-          </h2>
-          <p className="mt-2 text-xs md:text-sm text-black/50 dark:text-white/50 leading-relaxed font-medium">
-            Fill out the form below to configure your voice agent. We will contact you on WhatsApp to activate your demo.
-          </p>
-        </div>
 
         <AnimatePresence mode="wait">
           {!success ? (
