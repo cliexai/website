@@ -1,28 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
-  <!-- Homepage — highest priority, changes most often -->
+  <!--
+    Generated from page scan of src/App.tsx, src/pages/*, src/components/*
+    Public routes identified: / | /login
+    Auth-gated routes excluded: /portal, /admin
+    Last updated: 2026-05-29
+  -->
+
+  <!-- ── Homepage ─────────────────────────────────────────────── -->
   <url>
     <loc>https://cliexai.com/</loc>
-    <lastmod>2025-01-01</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-05-29</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
 
-  <!-- Login page -->
+  <!--
+    The homepage is a single long-scroll page with the following
+    named sections (anchor links, not separate routes):
+      #features   — AI voice agent capabilities
+      #stats      — Performance metrics
+      #pricing    — Starter / Growth / Premium plans
+      #faq        — Frequently asked questions
+      #contact    — Lead capture form
+
+    Anchor-only URLs are not separate sitemap entries but are
+    listed here as comments so they can be added as individual
+    pages if the site structure changes.
+  -->
+
+  <!-- ── Login / Auth ─────────────────────────────────────────── -->
   <url>
     <loc>https://cliexai.com/login</loc>
-    <lastmod>2025-01-01</lastmod>
+    <lastmod>2026-05-29</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-
-  <!-- Client portal (auth-gated, still worth indexing the URL) -->
-  <url>
-    <loc>https://cliexai.com/portal</loc>
-    <lastmod>2025-01-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
+    <priority>0.6</priority>
   </url>
 
 </urlset>

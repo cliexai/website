@@ -1,9 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /api/
 
-# Block admin and internal routes from indexing
-Disallow: /admin
-Disallow: /portal
-
-# Sitemap location
 Sitemap: https://cliexai.com/sitemap.xml
