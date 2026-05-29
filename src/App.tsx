@@ -7,13 +7,13 @@ import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { MacOSBar } from './components/MacOSBar';
 import { FloatingAgent } from './components/FloatingAgent';
+import ParticleSwarm from './components/ParticleSwarm';
 import { X, ChevronUp } from 'lucide-react';
 import { useIsMobile } from './hooks/useIsMobile';
 import { AdminPage } from './pages/AdminPage';
 import { LoginPage } from './pages/LoginPage';
 import { PortalPage } from './pages/PortalPage';
-
-const VIDEO_SRC = 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260508_064122_c4750c0e-7476-4b44-94a2-a85a65c63bf2.mp4';
+import { useCanonical } from './hooks/useCanonical';
 
 const VoiceDashboardMockup = lazy(() => import('./components/VoiceDashboardMockup').then(m => ({ default: m.VoiceDashboardMockup })));
 const Features = lazy(() => import('./components/Features').then(m => ({ default: m.Features })));
@@ -35,38 +35,8 @@ const SectionFallback: React.FC<{ height?: string }> = ({ height = 'py-40' }) =>
 const MainLayout: React.FC = () => {
   const isMobile = useIsMobile();
   const lenisRef = useRef<Lenis | null>(null);
-  const [activeVid, setActiveVid] = useState(1);
   const [showNotice, setShowNotice] = useState(true);
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const vid1Ref = useRef<HTMLVideoElement>(null);
-  const vid2Ref = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    const vid1 = vid1Ref.current;
-    const vid2 = vid2Ref.current;
-    if (!vid1 || !vid2) return;
-
-    const MARGIN = 0.6;
-
-    const onTime = () => {
-      if (activeVid === 1 && vid1.duration && vid1.currentTime >= vid1.duration - MARGIN) {
-        vid2.currentTime = 0;
-        vid2.play();
-        setActiveVid(2);
-      } else if (activeVid === 2 && vid2.duration && vid2.currentTime >= vid2.duration - MARGIN) {
-        vid1.currentTime = 0;
-        vid1.play();
-        setActiveVid(1);
-      }
-    };
-
-    vid1.addEventListener('timeupdate', onTime);
-    vid2.addEventListener('timeupdate', onTime);
-    return () => {
-      vid1.removeEventListener('timeupdate', onTime);
-      vid2.removeEventListener('timeupdate', onTime);
-    };
-  }, [activeVid]);
 
   useEffect(() => {
     const isMobile = window.innerWidth < 768;
@@ -120,38 +90,7 @@ const MainLayout: React.FC = () => {
       {isMobile ? (
         <div className="fixed inset-0 z-0 pointer-events-none bg-gradient-to-b from-brand/5 via-brand/10 to-brand/5 dark:from-brand/[0.03] dark:via-brand/[0.06] dark:to-brand/[0.03]" />
       ) : (
-        <>
-          <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-            <video
-              ref={vid1Ref}
-              autoPlay
-              muted
-              playsInline
-              preload="auto"
-              className="absolute inset-0 w-full h-full object-cover pointer-events-none transition-opacity duration-[1s] ease-in-out"
-              style={{
-                opacity: activeVid === 1 ? 0.55 : 0,
-                maskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)',
-                WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)',
-              }}
-              src={VIDEO_SRC}
-            />
-            <video
-              ref={vid2Ref}
-              muted
-              playsInline
-              preload="auto"
-              className="absolute inset-0 w-full h-full object-cover pointer-events-none transition-opacity duration-[1s] ease-in-out"
-              style={{
-                opacity: activeVid === 2 ? 0.55 : 0,
-                maskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)',
-                WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)',
-              }}
-              src={VIDEO_SRC}
-            />
-          </div>
-          <div className="fixed inset-0 z-0 pointer-events-none mix-blend-color bg-brand/60" />
-        </>
+        <ParticleSwarm />
       )}
 
       {/* Cinematic Frosted Glass Gradient Overlay - Ensures high readability in both modes */}
@@ -249,6 +188,9 @@ const MainLayout: React.FC = () => {
 
 function App() {
   const path = window.location.pathname;
+
+  // Dynamically set <link rel="canonical"> to https://cliexai.com/<path>
+  useCanonical();
 
   return (
     <AuthProvider>
