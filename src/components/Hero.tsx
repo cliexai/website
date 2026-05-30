@@ -1,7 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { AppleButton } from './SharedPrimitives';
-import { scrollToId } from '../utils/smoothScroll';
 import { useIsMobile } from '../hooks/useIsMobile';
 
 export const Hero: React.FC = () => {

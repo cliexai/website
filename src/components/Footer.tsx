@@ -51,7 +51,8 @@ export const Footer: React.FC = () => {
     }
   ];
 
-  const linkSections = [
+  type FooterItem = { label: string; href?: string; type?: 'header'; badge?: string; highlight?: boolean };
+  const linkSections: { title: string; items: FooterItem[] }[] = [
     {
       title: 'Solutions',
       items: [

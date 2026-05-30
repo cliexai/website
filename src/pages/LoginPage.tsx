@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { LogoMark } from '../components/SharedPrimitives';
 import { useAuth } from '../contexts/AuthContext';
-import { Loader2, ShieldCheck, Lock } from 'lucide-react';
+import { Loader2, AlertCircle } from 'lucide-react';
 import { ThemeBackground } from '../components/ThemeBackground';
+import { supabase } from '../lib/supabaseClient';
 
 // Google brand SVG
 const GoogleIcon: React.FC<{ className?: string }> = ({ className = 'w-5 h-5' }) => (
@@ -15,14 +16,13 @@ const GoogleIcon: React.FC<{ className?: string }> = ({ className = 'w-5 h-5' })
   </svg>
 );
 
-const TRUST_BADGES = [
-  { icon: <ShieldCheck className="w-3.5 h-3.5" />, text: 'Google OAuth 2.0' },
-  { icon: <Lock className="w-3.5 h-3.5" />, text: 'No passwords stored' },
-];
-
 export const LoginPage: React.FC = () => {
   const { user, loading, signInWithGoogle } = useAuth();
   const [signingIn, setSigningIn] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [formError, setFormError] = useState<string | null>(null);
+  const [formLoading, setFormLoading] = useState(false);
 
   // If already logged in, bounce to portal
   useEffect(() => {
@@ -34,7 +34,26 @@ export const LoginPage: React.FC = () => {
   const handleSignIn = async () => {
     setSigningIn(true);
     await signInWithGoogle();
-    // signInWithGoogle performs a full redirect — no cleanup needed
+  };
+
+  const handleEmailSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormError(null);
+    setFormLoading(true);
+
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    setFormLoading(false);
+
+    if (signInError) {
+      setFormError(signInError.message);
+      return;
+    }
+
+    window.location.href = '/portal';
   };
 
   if (loading) {
@@ -79,19 +98,25 @@ export const LoginPage: React.FC = () => {
         {/* Card */}
         <div className="bg-white/[0.04] border border-white/[0.08] rounded-2xl p-6 backdrop-blur-xl shadow-2xl shadow-black/40">
           
-          <form onSubmit={(e) => { e.preventDefault(); window.location.href = '/portal'; }} className="space-y-4 mb-5">
+          <form onSubmit={handleEmailSignIn} className="space-y-4 mb-5">
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-white/70">Email</label>
-              <input required type="email" placeholder="john@example.com" className="w-full bg-[#161616] border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand/50 focus:border-brand/50 transition-all text-white placeholder:text-white/30" />
+              <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="john@example.com" className="w-full bg-[#161616] border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand/50 focus:border-brand/50 transition-all text-white placeholder:text-white/30" />
             </div>
 
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-white/70">Password</label>
-              <input required type="password" placeholder="••••••••" className="w-full bg-[#161616] border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand/50 focus:border-brand/50 transition-all text-white placeholder:text-white/30" />
+              <input required type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className="w-full bg-[#161616] border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand/50 focus:border-brand/50 transition-all text-white placeholder:text-white/30" />
             </div>
 
-            <button type="submit" className="w-full mt-2 bg-brand hover:bg-brand-light text-white font-semibold py-3 rounded-xl transition-all shadow-[0_0_15px_rgba(139,92,246,0.3)] hover:shadow-[0_0_25px_rgba(139,92,246,0.5)] active:scale-[0.98]">
-              Sign In
+            {formError && (
+              <div className="flex items-center gap-2 bg-red-500/10 border border-red-500/20 rounded-xl px-3 py-2 text-xs text-red-400">
+                <AlertCircle className="w-4 h-4 shrink-0" />{formError}
+              </div>
+            )}
+
+            <button type="submit" disabled={formLoading} className="w-full mt-2 bg-brand hover:bg-brand-light text-white font-semibold py-3 rounded-xl transition-all shadow-[0_0_15px_rgba(139,92,246,0.3)] hover:shadow-[0_0_25px_rgba(139,92,246,0.5)] active:scale-[0.98] disabled:opacity-60">
+              {formLoading ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : 'Sign In'}
             </button>
           </form>
 

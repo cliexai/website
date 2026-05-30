@@ -9,6 +9,7 @@ export default {
     extend: {
       colors: {
         brand: '#8B5CF6',
+        'brand-light': '#A78BFA',
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],

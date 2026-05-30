@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   LogOut, RefreshCw, Search, Trash2, Users,
@@ -9,7 +9,7 @@ import {
 import { supabase, type Lead } from '../lib/supabaseClient';
 
 // ─── Admin access control ──────────────────────────────────────
-const ADMIN_EMAIL = 'cliexai@gmail.com';
+const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL ?? 'cliexai@gmail.com';
 
 // ─── View state machine ────────────────────────────────────────
 type AdminView = 'loading' | 'login' | 'verify-code' | 'dashboard';
@@ -298,7 +298,6 @@ const StatCard: React.FC<{
 // ─── Main dashboard ────────────────────────────────────────────
 const Dashboard: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
   const [leads, setLeads]         = useState<Lead[]>([]);
-  const [filtered, setFiltered]   = useState<Lead[]>([]);
   const [loading, setLoading]     = useState(true);
   const [search, setSearch]       = useState('');
   const [planFilter, setPlanFilter] = useState<string>('All');
@@ -313,9 +312,9 @@ const Dashboard: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
     setLoading(false);
   }, []);
 
-  useEffect(() => { fetchLeads(); }, [fetchLeads]);
+  useEffect(() => { fetchLeads(); }, []);
 
-  useEffect(() => {
+  const filtered = useMemo(() => {
     let result = leads;
     if (planFilter !== 'All') result = result.filter((l) => l.plan === planFilter);
     if (search.trim()) {
@@ -325,7 +324,7 @@ const Dashboard: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
                l.email.toLowerCase().includes(q)     || l.whatsapp.includes(q),
       );
     }
-    setFiltered(result);
+    return result;
   }, [leads, search, planFilter]);
 
   const handleDelete = async (id: string) => {

@@ -8,7 +8,6 @@ import { Hero } from './components/Hero';
 import { MacOSBar } from './components/MacOSBar';
 import { FloatingAgent } from './components/FloatingAgent';
 import { X, ChevronUp } from 'lucide-react';
-import { useIsMobile } from './hooks/useIsMobile';
 import { AdminPage } from './pages/AdminPage';
 import { LoginPage } from './pages/LoginPage';
 import { SignupPage } from './pages/SignupPage';
@@ -17,17 +16,11 @@ import { GetStartedPage } from './pages/GetStartedPage';
 import { useCanonical } from './hooks/useCanonical';
 import { ThemeBackground } from './components/ThemeBackground';
 
-const VIDEO_SRC = 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260508_064122_c4750c0e-7476-4b44-94a2-a85a65c63bf2.mp4';
-
 const VoiceDashboardMockup = lazy(() => import('./components/VoiceDashboardMockup').then(m => ({ default: m.VoiceDashboardMockup })));
 const Features = lazy(() => import('./components/Features').then(m => ({ default: m.Features })));
-const LogoCloud = lazy(() => import('./components/LogoCloud').then(m => ({ default: m.LogoCloud })));
 const Stats = lazy(() => import('./components/Stats').then(m => ({ default: m.Stats })));
-const Testimonials = lazy(() => import('./components/Testimonials').then(m => ({ default: m.Testimonials })));
 const Pricing = lazy(() => import('./components/Pricing').then(m => ({ default: m.Pricing })));
 const FAQ = lazy(() => import('./components/FAQ').then(m => ({ default: m.FAQ })));
-const LeadForm = lazy(() => import('./components/LeadForm').then(m => ({ default: m.LeadForm })));
-const FinalCTA = lazy(() => import('./components/FinalCTA').then(m => ({ default: m.FinalCTA })));
 const Footer = lazy(() => import('./components/Footer').then(m => ({ default: m.Footer })));
 
 const SectionFallback: React.FC<{ height?: string }> = ({ height = 'py-40' }) => (
@@ -37,7 +30,6 @@ const SectionFallback: React.FC<{ height?: string }> = ({ height = 'py-40' }) =>
 );
 
 const MainLayout: React.FC = () => {
-  const isMobile = useIsMobile();
   const lenisRef = useRef<Lenis | null>(null);
   const [showNotice, setShowNotice] = useState(true);
   const [showScrollTop, setShowScrollTop] = useState(false);

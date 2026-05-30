@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { MessageSquare, X, Send, Mic, Sparkles, PhoneCall, Loader2 } from 'lucide-react';
+import { X, Send, Mic, Sparkles, PhoneCall, Loader2 } from 'lucide-react';
 import { LogoMark } from './SharedPrimitives';
 
 interface ChatMessage {

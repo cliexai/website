@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Mail, Briefcase, User, Phone, CheckCircle2, Sparkles, Send, Loader2, AlertCircle, ShieldCheck } from 'lucide-react';
+import { Mail, Briefcase, User, Phone, CheckCircle2, Send, Loader2, AlertCircle, ShieldCheck } from 'lucide-react';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { supabase } from '../lib/supabaseClient';
 

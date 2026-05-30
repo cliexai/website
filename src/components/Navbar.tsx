@@ -4,7 +4,7 @@ import { useTheme } from './ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { LogoMark, AppleButton } from './SharedPrimitives';
 import { Sun, Moon, Menu, X, User, LayoutDashboard, LogOut, ChevronDown } from 'lucide-react';
-import { scrollToId } from '../utils/smoothScroll';
+
 
 export const Navbar: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
