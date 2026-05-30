@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Mail, Briefcase, User, Phone, CheckCircle2, Send, Loader2, AlertCircle, ShieldCheck } from 'lucide-react';
+import { Mail, Briefcase, User, CheckCircle2, Send, Loader2, AlertCircle, ShieldCheck } from 'lucide-react';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { supabase } from '../lib/supabaseClient';
+import { CountrySelect } from './CountrySelect';
+import countriesData from '../lib/countries.json';
 
 // ── Global grecaptcha type declarations ────────────────────────
 declare global {
@@ -42,6 +44,7 @@ export const LeadForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [countryCode, setCountryCode] = useState('US');
 
   // ── Load and render reCAPTCHA widget ──────────────────────────
   const renderWidget = useCallback(() => {
@@ -98,12 +101,15 @@ export const LeadForm: React.FC = () => {
 
     setLoading(true);
 
+    const selectedCountry = countriesData.find(c => c.code === countryCode) || { dial_code: '+1' };
+    const fullPhoneNumber = `${selectedCountry.dial_code} ${formData.whatsappNumber.trim()}`;
+
     const { error: supabaseError } = await supabase.from('leads').insert([
       {
         full_name: formData.fullName,
         business:  formData.businessName,
         email:     formData.email,
-        whatsapp:  formData.whatsappNumber,
+        whatsapp:  fullPhoneNumber,
         plan:      formData.selectedPackage,
       },
     ]);
@@ -199,14 +205,14 @@ export const LeadForm: React.FC = () => {
 
               {/* WhatsApp */}
               <div className="flex flex-col">
-                <label className="text-[10px] font-bold text-black/60 dark:text-white/50 uppercase mb-1.5 tracking-wider">WhatsApp Number (with country code)</label>
-                <div className="relative">
-                  <Phone className="w-4 h-4 text-black/40 dark:text-white/40 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <label className="text-[10px] font-bold text-black/60 dark:text-white/50 uppercase mb-1.5 tracking-wider">WhatsApp Number</label>
+                <div className="flex bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl focus-within:ring-2 focus-within:ring-brand/50 focus-within:border-brand/50 transition-all relative">
+                  <CountrySelect value={countryCode} onChange={setCountryCode} />
                   <input
-                    type="text" required placeholder="+1 (555) 019-2834"
+                    type="tel" required placeholder="(555) 019-2834"
                     value={formData.whatsappNumber}
                     onChange={(e) => setFormData({ ...formData, whatsappNumber: e.target.value })}
-                    className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl py-3 pl-10 pr-4 text-base sm:text-xs text-black dark:text-white outline-none focus:border-brand/40 dark:focus:border-brand/40 transition-colors placeholder-black/45 dark:placeholder-white/45"
+                    className="w-full bg-transparent pl-3.5 pr-4 py-3 text-base sm:text-xs text-black dark:text-white outline-none placeholder-black/45 dark:placeholder-white/45"
                   />
                 </div>
               </div>

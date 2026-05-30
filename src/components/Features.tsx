@@ -1,77 +1,77 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { SectionEyebrow } from './SharedPrimitives';
-import { Phone, Calendar, ShoppingCart, Info, UserCheck, BarChart3, ArrowRight } from 'lucide-react';
+import { PhoneCall, Calendar, Network, ShieldCheck, Server, BrainCircuit, ArrowRight } from 'lucide-react';
 import { useIsMobile } from '../hooks/useIsMobile';
 
 export const Features: React.FC = () => {
   const isMobile = useIsMobile();
   const benefits = [
     {
-      icon: <Phone className="w-5 h-5 text-brand" />,
-      title: '24/7 Call Handling',
-      description: 'Never miss a single lead. Our agents answer instantly, day or night, holidays included.',
+      icon: <PhoneCall className="w-5 h-5 text-brand" />,
+      title: 'Core Voice Automation',
+      description: '24/7 Virtual Receptionist & Outbound SDR handling calls with sub-second latency.',
     },
     {
       icon: <Calendar className="w-5 h-5 text-purple-400" />,
-      title: 'Smart Appointment Booking',
-      description: 'Syncs directly with Google, Outlook, or your CRM to book, reschedule, and text reminders.',
+      title: 'Direct Calendar Negotiators',
+      description: 'Dynamic API sync checks open slots and books directly during live conversation.',
     },
     {
-      icon: <ShoppingCart className="w-5 h-5 text-emerald-400" />,
-      title: 'Order Taking for Restaurants',
-      description: 'Takers capture complete food customization, calculate totals, and inject orders into your POS.',
+      icon: <Network className="w-5 h-5 text-emerald-400" />,
+      title: 'Real-time CRM Syncing',
+      description: 'Instant multi-way sync with your CRM to update lead cards after every hang-up.',
     },
     {
-      icon: <Info className="w-5 h-5 text-sky-400" />,
-      title: 'Business Info Delivery',
-      description: 'Instantly answers FAQs about your business, products, operations, and pricing models.',
+      icon: <BrainCircuit className="w-5 h-5 text-sky-400" />,
+      title: 'Native Objection Handling',
+      description: 'Detects consumer hesitation and delivers targeted rebuttals instead of giving up.',
     },
     {
-      icon: <UserCheck className="w-5 h-5 text-amber-400" />,
-      title: 'Human Escalation',
-      description: 'Intelligently detects complex situations and seamlessly forwards the caller to live humans.',
+      icon: <Server className="w-5 h-5 text-amber-400" />,
+      title: 'RAG & Custom Guardrails',
+      description: 'Restricts the AI to authorized data only, completely preventing hallucinations.',
     },
     {
-      icon: <BarChart3 className="w-5 h-5 text-pink-400" />,
-      title: 'Call Analytics & Recordings',
-      description: 'Read instant text transcriptions and comprehensive AI sentiment analysis inside your panel.',
+      icon: <ShieldCheck className="w-5 h-5 text-pink-400" />,
+      title: 'HIPAA & SOC 2 Compliant',
+      description: 'Medical and financial-grade security, auto-scrubbing PII from call transcripts.',
     },
   ];
 
   const chips = [
-    '24/7 Call Handling',
-    'Smart Appointment Booking',
-    'Order Taking for Restaurants',
-    'Business Information Delivery',
-    'Human Escalation',
-    'Call Analytics & Recordings',
+    'Sub-second Latency',
+    'CRM & Calendar Sync',
+    'Objection Handling',
+    'Custom Voice Cloning',
+    'HIPAA / SOC 2 Ready',
+    'RAG Knowledge Base',
   ];
 
   const triageCategories = [
     {
-      title: '24/7 Call Handling',
+      title: 'Voice Automation',
       count: 18,
       dotColor: '#ffffff',
-      items: ['Marcus Vance — Restaurant order completed', 'Sarah Miller — Support case resolved'],
+      items: ['Outbound Lead Qualified', 'No-Show Reminder Sent'],
     },
     {
-      title: 'Smart Booking',
+      title: 'Calendar Sync',
       count: 7,
       dotColor: '#e5e5e5',
-      items: ['Dentist Appointment — Sophia Chen', 'Consultation — David Lim booked'],
+      items: ['Dentist Appointment — Booked', 'Consultation — Rescheduled'],
     },
     {
-      title: 'Info Delivery',
+      title: 'Objections Handled',
       count: 12,
       dotColor: '#a3a3a3',
-      items: ["Mario's Pizza — Store hours inquiry", 'ClieX Website — Price quote delivered'],
+      items: ["Price Pushback — Rebuttal applied", 'Timing Doubt — Follow-up set'],
     },
     {
-      title: 'Human Escalation',
+      title: 'Smart Routing',
       count: 5,
       dotColor: '#525252',
-      items: ['Billing escalation to Finance', 'VIP customer routed to Support Lead'],
+      items: ['Billing escalation to Finance', 'VIP caller routed to human'],
     },
   ];
 
@@ -155,8 +155,8 @@ export const Features: React.FC = () => {
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <span
-                        className="w-2 h-2 rounded-full"
-                        style={{ backgroundColor: cat.dotColor }}
+                         className="w-2 h-2 rounded-full"
+                         style={{ backgroundColor: cat.dotColor }}
                       />
                       <span className="text-xs font-bold text-black dark:text-white">
                         {cat.title}

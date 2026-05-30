@@ -16,27 +16,27 @@ export const Stats: React.FC = () => {
   const statsList = [
     {
       icon: <PhoneMissed className="w-5 h-5 text-brand" />,
-      number: '62%',
-      label: 'Of Calls Go Unanswered',
-      description: 'The majority of incoming calls to businesses go straight to voicemail or are abandoned entirely.',
+      number: '62.2%',
+      label: 'SMB Unanswered Calls',
+      description: 'Small and medium-sized businesses fail to answer an average of 62.2% of all incoming calls.',
     },
     {
       icon: <TrendingDown className="w-5 h-5 text-indigo-400" />,
       number: '85%',
-      label: 'Lost Customers',
-      description: "85% of callers whose calls aren't answered will never call back. They just move on to a competitor.",
+      label: 'Voicemail Abandonment',
+      description: "85% of callers who reach a company's voicemail hang up without leaving a message.",
     },
     {
       icon: <Clock className="w-5 h-5 text-purple-400" />,
-      number: '5 Mins',
-      label: 'Lead Decay Window',
-      description: 'Responding to a lead within 5 minutes boosts conversions by 900%. Every minute kills your ROI.',
+      number: '78%',
+      label: 'Lead Dropoff (5 Mins)',
+      description: 'If a business fails to follow up within 5 minutes, the likelihood of converting that lead drops by 78%.',
     },
     {
       icon: <AlertTriangle className="w-5 h-5 text-pink-400" />,
-      number: '$40B+',
-      label: 'Revenue Lost Annually',
-      description: 'The combined cost of missed calls and poor customer service. Stop bleeding revenue today.',
+      number: '$75B+',
+      label: 'Annual Revenue Lost',
+      description: 'Businesses lose an estimated $75B to $100B annually due to poor customer response times.',
     },
   ];
 
@@ -54,7 +54,7 @@ export const Stats: React.FC = () => {
           What are you <span style={gradientStyle} className="select-none">missing out</span> on?
         </h2>
         <p className="text-black/60 dark:text-white/60 text-base md:text-lg max-w-2xl mx-auto font-medium">
-          Every missed call is a missed opportunity. Here's the brutal reality of relying on humans to answer the phone.
+          Every missed call is a missed opportunity. Here's the brutal financial reality of relying on manual front-desk answering.
         </p>
       </motion.div>
 

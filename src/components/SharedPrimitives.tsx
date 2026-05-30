@@ -1,31 +1,11 @@
 import { ChevronRight } from 'lucide-react';
 
 export const LogoMark: React.FC<{ className?: string }> = ({ className = 'w-8 h-8' }) => (
-  <svg
-    viewBox="0 0 100 100"
-    className={className}
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <defs>
-      <filter id="logo-glow" x="-30%" y="-30%" width="160%" height="160%">
-        <feGaussianBlur stdDeviation="3.5" result="blur" />
-        <feMerge>
-          <feMergeNode in="blur" />
-          <feMergeNode in="blur" />
-          <feMergeNode in="SourceGraphic" />
-        </feMerge>
-      </filter>
-    </defs>
-    <path
-      d="M 10 50 H 22 C 25 50 26 40 28 44 C 30 48 32 68 35 32 C 38 12 40 88 43 24 C 46 94 48 6 51 76 C 54 18 56 82 59 30 C 62 64 64 36 67 44 C 70 52 72 60 75 46 C 78 32 80 50 84 50 H 90"
-      stroke="currentColor"
-      strokeWidth="4"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      filter="url(#logo-glow)"
-    />
-  </svg>
+  <img
+    src="/favicon.png"
+    alt="ClieX AI Logo"
+    className={`${className} object-contain select-none`}
+  />
 );
 
 interface AppleButtonProps {

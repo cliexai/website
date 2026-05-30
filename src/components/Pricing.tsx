@@ -17,45 +17,44 @@ export const Pricing: React.FC = () => {
   const plans: Plan[] = [
     {
       tier: 'Starter',
-      monthlyPrice: '$100',
-      yearlyPrice: '$80', // equivalent or absolute
-      setupFee: '$50 setup fee',
-      desc: 'For small businesses starting their automation journey.',
+      monthlyPrice: '$199',
+      yearlyPrice: '$159',
+      setupFee: '$499 setup fee',
+      desc: 'Self-Serve/Basic Automation for small businesses.',
       features: [
-        '1 Custom AI Voice Agent',
-        '30 days storage for recordings',
-        'Basic calendar & database sync',
-        'Standard business hours support',
-        'Access via dashboard console'
+        '1 Inbound Agent',
+        'Standard FAQs',
+        'Email Support',
+        '1,000 Call Minutes/mo'
       ]
     },
     {
-      tier: 'Growth',
-      monthlyPrice: '$150',
-      yearlyPrice: '$120',
-      setupFee: '$100 setup fee',
-      desc: 'For growing businesses requiring flexibility and priority handling.',
+      tier: 'Pro Growth',
+      monthlyPrice: '$499',
+      yearlyPrice: '$399',
+      setupFee: '$1,499 setup fee',
+      desc: 'Premium Done-For-You service with advanced workflows.',
       features: [
-        '5 Custom AI Voice Agents',
-        '90 days storage for recordings',
-        'Advanced database & CRM sync',
-        'Multi-language support (29+ languages)',
-        'Priority customer support queue'
-      ]
-    },
-    {
-      tier: 'Premium',
+        '3 Specialized Agents (In/Out)',
+        'Full CRM & Calendar Sync',
+        'Smart Human Handoff',
+        '2,500 Call Minutes/mo',
+        'Priority Support'
+      ],
       isPro: true,
-      monthlyPrice: '$300',
-      yearlyPrice: '$240',
-      setupFee: '$200 setup fee',
-      desc: 'For enterprise creators requiring custom setups and dedicated hosting.',
+    },
+    {
+      tier: 'Enterprise',
+      monthlyPrice: 'Custom',
+      yearlyPrice: 'Custom',
+      setupFee: 'Custom Setup ($3,000+)',
+      desc: 'Bespoke solutions for high-volume enterprise operations.',
       features: [
-        'Unlimited AI Voice Agents',
-        '365 days storage for recordings',
-        'Custom POS & database integration',
-        'Voice cloning & custom accents',
-        'Dedicated account manager (24/7)'
+        'Custom Voice Cloning',
+        'Multi-Language Switching',
+        'Dedicated Server',
+        'HIPAA/PCI Compliance',
+        'Dedicated Account Manager'
       ]
     }
   ];
@@ -94,7 +93,10 @@ export const Pricing: React.FC = () => {
       <div className="c3-grid">
         {plans.map((plan) => {
           const price = yearly ? plan.yearlyPrice : plan.monthlyPrice;
-          const billingSuffix = yearly ? '/mo, billed yearly' : '/mo';
+          const billingSuffix = (price === 'Custom') 
+            ? 'Retainer' 
+            : (yearly ? '/mo, billed yearly' : '/mo');
+
           return (
             <div
               key={plan.tier}

@@ -6,6 +6,7 @@ import { CountrySelect } from '../components/CountrySelect';
 import { ThemeBackground } from '../components/ThemeBackground';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabaseClient';
+import countriesData from '../lib/countries.json';
 
 export const SignupPage: React.FC = () => {
   const { signInWithGoogle } = useAuth();
@@ -35,10 +36,13 @@ export const SignupPage: React.FC = () => {
     }
 
     setIsLoading(true);
+    const selectedCountry = countriesData.find(c => c.code === countryCode) || { dial_code: '+1' };
+    const fullPhoneNumber = `${selectedCountry.dial_code} ${phone.trim()}`;
+
     const { error: signUpError } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { full_name: fullName, phone } },
+      options: { data: { full_name: fullName, phone: fullPhoneNumber } },
     });
     setIsLoading(false);
 

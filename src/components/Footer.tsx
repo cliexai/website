@@ -111,7 +111,7 @@ export const Footer: React.FC = () => {
         <div className="flex flex-col items-start max-w-sm lg:w-1/4">
           <a href="#" className="flex items-center gap-2 text-brand mb-4 group select-none">
             <LogoMark className="w-8 h-8 text-brand group-hover:scale-110 transition-transform duration-300" />
-            <span className="text-base font-black tracking-wider uppercase text-black dark:text-white">
+            <span className="text-base font-black tracking-wider text-black dark:text-white">
               ClieX AI
             </span>
           </a>

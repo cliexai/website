@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, lazy, Suspense } from 'react';
+import React, { useEffect, useState, lazy, Suspense } from 'react';
 import Lenis from 'lenis';
 import { handleDocumentAnchorClick, setLenisInstance, getLenisInstance } from './utils/smoothScroll';
 import { ThemeProvider } from './components/ThemeContext';
@@ -30,30 +30,10 @@ const SectionFallback: React.FC<{ height?: string }> = ({ height = 'py-40' }) =>
 );
 
 const MainLayout: React.FC = () => {
-  const lenisRef = useRef<Lenis | null>(null);
   const [showNotice, setShowNotice] = useState(true);
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
-    const isMobile = window.innerWidth < 768;
-    const lenis = new Lenis({
-      duration: isMobile ? 0.8 : 1.2,
-      easing: (t) => 1 - Math.pow(1 - t, 3),
-      smoothWheel: !isMobile,
-      wheelMultiplier: isMobile ? 0.8 : 1,
-      touchMultiplier: isMobile ? 0.5 : 0.8,
-    });
-    lenisRef.current = lenis;
-    setLenisInstance(lenis);
-
-    function raf(time: number) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
-
-    document.addEventListener('click', handleDocumentAnchorClick, true);
-
     const handleScroll = () => {
       const scrollPercent = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
       setShowScrollTop(scrollPercent > 0.45);
@@ -61,10 +41,7 @@ const MainLayout: React.FC = () => {
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => {
-      document.removeEventListener('click', handleDocumentAnchorClick, true);
       window.removeEventListener('scroll', handleScroll);
-      lenis.destroy();
-      setLenisInstance(null);
     };
   }, []);
 
@@ -150,6 +127,33 @@ function App() {
 
   // Dynamically set <link rel="canonical"> to https://cliexai.com/<path>
   useCanonical();
+
+  // Initialize Lenis smooth scroll globally across all pages
+  useEffect(() => {
+    const isMobile = window.innerWidth < 768;
+    const lenis = new Lenis({
+      duration: isMobile ? 0.8 : 1.2,
+      easing: (t) => 1 - Math.pow(1 - t, 3),
+      smoothWheel: !isMobile,
+      wheelMultiplier: isMobile ? 0.8 : 1,
+      touchMultiplier: isMobile ? 0.5 : 0.8,
+    });
+    setLenisInstance(lenis);
+
+    function raf(time: number) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+
+    document.addEventListener('click', handleDocumentAnchorClick, true);
+
+    return () => {
+      document.removeEventListener('click', handleDocumentAnchorClick, true);
+      lenis.destroy();
+      setLenisInstance(null);
+    };
+  }, []);
 
   return (
     <AuthProvider>
