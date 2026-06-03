@@ -51,7 +51,6 @@ const MainLayout: React.FC = () => {
 
       {/* Page Sections */}
       <div className="relative z-10">
-        <Navbar />
         <Hero />
         
         {/* macOS menu bar strip */}
@@ -155,9 +154,12 @@ function App() {
     };
   }, []);
 
+  const isPortalOrAdmin = path === '/portal' || path === '/admin';
+
   return (
     <AuthProvider>
       <ThemeProvider>
+        {!isPortalOrAdmin && <Navbar />}
         {path === '/admin'  ? <AdminPage />  :
          path === '/login'  ? <LoginPage />  :
          path === '/signup' ? <SignupPage /> :

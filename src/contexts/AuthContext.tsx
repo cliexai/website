@@ -26,9 +26,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
 
     // Keep auth state in sync across tabs and OAuth redirects
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, sess) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, sess) => {
       setSession(sess);
       setUser(sess?.user ?? null);
+      
+      // If they just signed in, force redirect to portal
+      if (event === 'SIGNED_IN') {
+        const path = window.location.pathname;
+        if (path === '/login' || path === '/signup') {
+          window.location.href = '/portal';
+        }
+      }
     });
 
     return () => subscription.unsubscribe();

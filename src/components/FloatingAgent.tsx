@@ -13,7 +13,7 @@ export const FloatingAgent: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       speaker: 'agent',
-      text: "Hi there! I am Alex, the ClieX AI Assistant. How can I help power your communications today? Ask me about booking, orders, or pricing!"
+      text: "Hi there! I am Chloe, the ClieX AI Assistant. How can I help power your communications today? Ask me about booking, orders, or pricing!"
     }
   ]);
   const [inputText, setInputText] = useState('');
@@ -103,7 +103,7 @@ export const FloatingAgent: React.FC = () => {
                 </div>
                 <div>
                   <h4 className="text-xs font-bold leading-tight flex items-center gap-1">
-                    <span>Ask Alex</span>
+                    <span>Ask Chloe</span>
                     <Sparkles className="w-3 h-3 text-amber-300" />
                   </h4>
                   <p className="text-[9px] text-white/70 font-semibold tracking-wide">
@@ -130,7 +130,7 @@ export const FloatingAgent: React.FC = () => {
                   }`}
                 >
                   <span className="text-[7.5px] font-bold text-black/35 dark:text-white/35 uppercase mb-0.5 tracking-wider">
-                    {msg.speaker === 'agent' ? 'Alex (AI)' : 'You (Sandbox Caller)'}
+                    {msg.speaker === 'agent' ? 'Chloe (AI)' : 'You (Sandbox Caller)'}
                   </span>
                   <p
                     className={`text-[11px] leading-relaxed max-w-[85%] rounded-xl p-2.5 font-medium ${
@@ -146,7 +146,7 @@ export const FloatingAgent: React.FC = () => {
               {isTyping && (
                 <div className="flex flex-col items-start">
                   <span className="text-[7.5px] font-bold text-black/35 dark:text-white/35 uppercase mb-0.5 tracking-wider">
-                    Alex (AI)
+                    Chloe (AI)
                   </span>
                   <div className="bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 rounded-xl px-4 py-2.5 rounded-tl-none flex gap-1 items-center">
                     <span className="w-1.5 h-1.5 bg-black/40 dark:bg-white/40 rounded-full animate-bounce" />
@@ -245,7 +245,7 @@ export const FloatingAgent: React.FC = () => {
         ) : (
           <>
             <LogoMark className="w-5 h-5 text-brand drop-shadow-[0_0_8px_rgba(139,92,246,0.6)]" />
-            <span className="text-[14px] font-bold tracking-wide">Ask Alex</span>
+            <span className="text-[14px] font-bold tracking-wide">Ask Chloe</span>
           </>
         )}
       </motion.button>

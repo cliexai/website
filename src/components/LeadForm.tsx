@@ -20,7 +20,7 @@ declare global {
 
 const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY as string | undefined;
 
-export const LeadForm: React.FC = () => {
+export const LeadForm: React.FC<{ onPlanChange?: (plan: string) => void }> = ({ onPlanChange }) => {
   const isMobile = useIsMobile();
   const recaptchaContainerRef = useRef<HTMLDivElement>(null);
   const widgetId = useRef<number | null>(null);
@@ -40,6 +40,12 @@ export const LeadForm: React.FC = () => {
       selectedPackage: defaultPlan,
     };
   });
+
+  useEffect(() => {
+    if (onPlanChange) {
+      onPlanChange(formData.selectedPackage);
+    }
+  }, [formData.selectedPackage, onPlanChange]);
 
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -227,8 +233,8 @@ export const LeadForm: React.FC = () => {
                   className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl py-3 px-3.5 text-base sm:text-xs text-black dark:text-white outline-none focus:border-brand/40 dark:focus:border-brand/40 transition-colors"
                 >
                   <option className="bg-white dark:bg-[#0c0c0c] text-black dark:text-white" value="Starter">Starter Plan ($100/mo + $50 setup)</option>
-                  <option className="bg-white dark:bg-[#0c0c0c] text-black dark:text-white" value="Growth">Growth Plan ($150/mo + $100 setup)</option>
-                  <option className="bg-white dark:bg-[#0c0c0c] text-black dark:text-white" value="Premium">Premium Plan ($300/mo + $200 setup)</option>
+                  <option className="bg-white dark:bg-[#0c0c0c] text-black dark:text-white" value="Professional">Professional Plan ($300/mo + $200 setup)</option>
+                  <option className="bg-white dark:bg-[#0c0c0c] text-black dark:text-white" value="Enterprise">Enterprise Plan (Custom)</option>
                 </select>
               </div>
 

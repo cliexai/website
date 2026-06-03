@@ -4,8 +4,11 @@ import { Check } from 'lucide-react';
 interface Plan {
   tier: string;
   monthlyPrice: string;
+  originalMonthlyPrice?: string;
   yearlyPrice: string;
+  originalYearlyPrice?: string;
   setupFee: string;
+  originalSetupFee?: string;
   desc: string;
   features: string[];
   isPro?: boolean;
@@ -17,44 +20,57 @@ export const Pricing: React.FC = () => {
   const plans: Plan[] = [
     {
       tier: 'Starter',
-      monthlyPrice: '$199',
-      yearlyPrice: '$159',
-      setupFee: '$499 setup fee',
+      monthlyPrice: '$71',
+      originalMonthlyPrice: '$119',
+      yearlyPrice: '$57',
+      originalYearlyPrice: '$95',
+      setupFee: '$59 setup',
+      originalSetupFee: '$99 setup',
       desc: 'Self-Serve/Basic Automation for small businesses.',
       features: [
-        '1 Inbound Agent',
-        'Standard FAQs',
-        'Email Support',
-        '1,000 Call Minutes/mo'
+        '24/7 inbound call answering',
+        'Basic appointment booking',
+        'Simple FAQ handling',
+        'Lead capture (name, email, phone)',
+        'Standard voice options',
+        'And more...'
       ]
     },
     {
-      tier: 'Pro Growth',
-      monthlyPrice: '$499',
-      yearlyPrice: '$399',
-      setupFee: '$1,499 setup fee',
+      tier: 'Professional',
+      monthlyPrice: '$149',
+      originalMonthlyPrice: '$249',
+      yearlyPrice: '$119',
+      originalYearlyPrice: '$199',
+      setupFee: '$119 setup',
+      originalSetupFee: '$199 setup',
       desc: 'Premium Done-For-You service with advanced workflows.',
       features: [
-        '3 Specialized Agents (In/Out)',
-        'Full CRM & Calendar Sync',
-        'Smart Human Handoff',
-        '2,500 Call Minutes/mo',
-        'Priority Support'
+        'Multiple phone numbers/departments',
+        'CRM integration',
+        'Customizable call flows/scripts',
+        'Advanced voice options',
+        'Basic analytics dashboard',
+        'And more...'
       ],
       isPro: true,
     },
     {
       tier: 'Enterprise',
-      monthlyPrice: 'Custom',
-      yearlyPrice: 'Custom',
-      setupFee: 'Custom Setup ($3,000+)',
+      monthlyPrice: '$299+',
+      originalMonthlyPrice: '$499+',
+      yearlyPrice: '$239+',
+      originalYearlyPrice: '$399+',
+      setupFee: '$179+ setup',
+      originalSetupFee: '$299+ setup',
       desc: 'Bespoke solutions for high-volume enterprise operations.',
       features: [
-        'Custom Voice Cloning',
-        'Multi-Language Switching',
-        'Dedicated Server',
-        'HIPAA/PCI Compliance',
-        'Dedicated Account Manager'
+        'Multi-agent system',
+        'Deep customization',
+        'Advanced analytics & reporting',
+        'Dedicated account manager',
+        'Voice cloning & custom voice talent',
+        'And more...'
       ]
     }
   ];
@@ -93,6 +109,7 @@ export const Pricing: React.FC = () => {
       <div className="c3-grid">
         {plans.map((plan) => {
           const price = yearly ? plan.yearlyPrice : plan.monthlyPrice;
+          const originalPrice = yearly ? plan.originalYearlyPrice : plan.originalMonthlyPrice;
           const billingSuffix = (price === 'Custom') 
             ? 'Retainer' 
             : (yearly ? '/mo, billed yearly' : '/mo');
@@ -100,17 +117,35 @@ export const Pricing: React.FC = () => {
           return (
             <div
               key={plan.tier}
-              className={`c3-card ${plan.isPro ? 'c3-card-pro' : ''}`}
+              className={`c3-card ${plan.isPro ? 'c3-card-pro' : ''} relative`}
             >
+              {/* Limited Offer Badge */}
+              <div className="absolute top-0 right-0 bg-brand text-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-bl-xl shadow-lg flex items-center gap-1.5 border-b border-l border-white/10 z-10">
+                <span>Limited Offer</span>
+                <span className="bg-white text-brand px-1.5 py-0.5 rounded font-black text-[9px]">-40%</span>
+              </div>
+
               <span className="c3-tier-small">{plan.tier}</span>
-              <div className="flex flex-col">
-                <span className="c3-tier-large">{price}</span>
+              <div className="flex flex-col mt-2">
+                {originalPrice && (
+                  <span className="text-sm text-black/50 dark:text-white/50 line-through decoration-brand/60 decoration-2 font-semibold">
+                    {originalPrice}
+                  </span>
+                )}
+                <span className="c3-tier-large !mt-0">{price}</span>
                 <span className="text-xs text-black/45 dark:text-white/45 font-medium mt-1">
                   {billingSuffix}
                 </span>
-                <span className="text-[10px] text-brand font-bold uppercase tracking-wider mt-1.5">
-                  {plan.setupFee}
-                </span>
+                <div className="flex items-center gap-2 mt-1.5">
+                  {plan.originalSetupFee && (
+                    <span className="text-[10px] text-black/40 dark:text-white/40 font-bold uppercase tracking-wider line-through decoration-brand/60">
+                      {plan.originalSetupFee}
+                    </span>
+                  )}
+                  <span className="text-[10px] text-brand font-bold uppercase tracking-wider">
+                    {plan.setupFee}
+                  </span>
+                </div>
               </div>
               <p className="c3-desc">{plan.desc}</p>
               

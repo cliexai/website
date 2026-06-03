@@ -60,7 +60,7 @@ export const SignupPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#0c0c0c] text-black dark:text-white flex flex-col md:flex-row font-sans selection:bg-brand/30 relative">
+    <div className="min-h-screen bg-white dark:bg-[#0c0c0c] text-black dark:text-white flex flex-col md:flex-row font-sans selection:bg-brand/30 relative pt-24">
       
       <ThemeBackground />
 

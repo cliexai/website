@@ -65,7 +65,7 @@ export const LoginPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden bg-white dark:bg-[#0c0c0c]">
+    <div className="min-h-screen flex items-center justify-center p-6 pt-24 relative overflow-hidden bg-white dark:bg-[#0c0c0c]">
       <ThemeBackground />
 
       <motion.div
@@ -155,16 +155,9 @@ export const LoginPage: React.FC = () => {
             Create an account
           </a>
         </p>
-
-        <div className="text-center mt-6">
-          <a
-            href="/"
-            className="text-xs text-white/20 hover:text-white/50 transition-colors inline-flex items-center gap-1"
-          >
-            ← Back to cliexai.com
-          </a>
-        </div>
       </motion.div>
+
+
     </div>
   );
 };

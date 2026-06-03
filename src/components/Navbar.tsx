@@ -84,7 +84,12 @@ export const Navbar: React.FC = () => {
                   className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 transition-all"
                 >
                   {avatarUrl ? (
-                    <img src={avatarUrl} alt={displayName} className="w-7 h-7 rounded-full object-cover border border-white/10" />
+                    <>
+                      <img src={avatarUrl} alt={displayName} referrerPolicy="no-referrer" className="w-7 h-7 rounded-full object-cover border border-white/10" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }} />
+                      <div className="hidden w-7 h-7 rounded-full bg-brand/20 items-center justify-center">
+                        <User className="w-3.5 h-3.5 text-brand" />
+                      </div>
+                    </>
                   ) : (
                     <div className="w-7 h-7 rounded-full bg-brand/20 flex items-center justify-center">
                       <User className="w-3.5 h-3.5 text-brand" />
@@ -191,7 +196,12 @@ export const Navbar: React.FC = () => {
                   <>
                     <div className="flex items-center gap-2.5 pb-2">
                       {avatarUrl ? (
-                        <img src={avatarUrl} alt={displayName} className="w-8 h-8 rounded-full object-cover border border-white/10" />
+                        <>
+                          <img src={avatarUrl} alt={displayName} referrerPolicy="no-referrer" className="w-8 h-8 rounded-full object-cover border border-white/10" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }} />
+                          <div className="hidden w-8 h-8 rounded-full bg-brand/20 items-center justify-center">
+                            <User className="w-4 h-4 text-brand" />
+                          </div>
+                        </>
                       ) : (
                         <div className="w-8 h-8 rounded-full bg-brand/20 flex items-center justify-center">
                           <User className="w-4 h-4 text-brand" />

@@ -9,7 +9,8 @@ import {
 import { supabase, type Lead } from '../lib/supabaseClient';
 
 // ─── Admin access control ──────────────────────────────────────
-const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL ?? 'cliexai@gmail.com';
+const ADMIN_EMAILS = ['cliexai@gmail.com', 'amiador017@gmail.com'];
+const isAdmin = (email?: string | null) => !!email && ADMIN_EMAILS.includes(email.toLowerCase());
 
 // ─── View state machine ────────────────────────────────────────
 type AdminView = 'loading' | 'login' | 'verify-code' | 'dashboard';
@@ -88,7 +89,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onCodeSent }) => {
     }
 
     // ── 2. Admin-only guard ─────────────────────────────────
-    if (data.user?.email !== ADMIN_EMAIL) {
+    if (!isAdmin(data.user?.email)) {
       await supabase.auth.signOut();
       setLoading(false);
       setError('Access denied. This portal is restricted to administrators only.');
@@ -217,7 +218,7 @@ const VerifyCodeForm: React.FC<VerifyCodeProps> = ({ email, onVerified, onBack }
     }
 
     // Final admin guard — make sure this session is actually the admin
-    if (data.user?.email !== ADMIN_EMAIL) {
+    if (!isAdmin(data.user?.email)) {
       await supabase.auth.signOut();
       setError('Access denied.');
       return;
@@ -332,7 +333,7 @@ const Dashboard: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
 
     // Re-verify admin session before destructive op
     const { data: sessionData } = await supabase.auth.getSession();
-    if (sessionData.session?.user?.email !== ADMIN_EMAIL) {
+    if (!isAdmin(sessionData.session?.user?.email)) {
       setError('Session invalid. Please log in again.');
       await supabase.auth.signOut();
       return;
@@ -524,7 +525,7 @@ export const AdminPage: React.FC = () => {
       const { data: sessionData } = await supabase.auth.getSession();
       const session = sessionData.session;
 
-      if (!session || session.user.email !== ADMIN_EMAIL) {
+      if (!session || !isAdmin(session.user.email)) {
         if (session) await supabase.auth.signOut();
         setView('login');
         return;
