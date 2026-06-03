@@ -14,6 +14,9 @@ export const ThemeBackground: React.FC = () => {
     const vid2 = vid2Ref.current;
     if (!vid1 || !vid2) return;
 
+    // Explicitly attempt to play the first video on mount to handle strict browser autoplay rules
+    vid1.play().catch(e => console.error("Autoplay prevented:", e));
+
     const MARGIN = 0.6;
 
     const onTime = () => {
