@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Sparkles, ArrowLeft, CheckCircle2 } from 'lucide-react';
-import { LogoMark } from '../components/SharedPrimitives';
+import { CheckCircle2 } from 'lucide-react';
 import { ThemeBackground } from '../components/ThemeBackground';
 import { LeadForm } from '../components/LeadForm';
 
