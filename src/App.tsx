@@ -102,6 +102,7 @@ const MainLayout: React.FC = () => {
 
       {/* Persistent floating Voice Widget */}
       <RetellTrigger />
+
     </div>
   );
 };
