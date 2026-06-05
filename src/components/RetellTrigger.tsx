@@ -646,7 +646,7 @@ export const RetellTrigger: React.FC = () => {
               <motion.div key="idle" initial={{ opacity: 0, scale: 0.7 }} animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.7 }} transition={{ duration: 0.18 }}
                 className="flex items-center gap-2.5">
-                <LogoMark className="w-5 h-5 brightness-0 invert" />
+                <LogoMark className="w-5 h-5" />
                 <span className="text-[14px] font-bold tracking-wide">Ask Chloe</span>
                 <Sparkles className="w-4 h-4 text-amber-300" />
               </motion.div>

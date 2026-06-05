@@ -6,7 +6,6 @@ import { ThemeProvider } from './components/ThemeContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
-import { FloatingAgent } from './components/FloatingAgent';
 import { RetellTrigger } from './components/RetellTrigger';
 import { X, ChevronUp } from 'lucide-react';
 import { AdminPage } from './pages/AdminPage';
@@ -20,7 +19,6 @@ const HowItWorks = lazy(() => import('./components/HowItWorks').then(m => ({ def
 const Features = lazy(() => import('./components/Features').then(m => ({ default: m.Features })));
 const Pricing = lazy(() => import('./components/Pricing').then(m => ({ default: m.Pricing })));
 const FAQ = lazy(() => import('./components/FAQ').then(m => ({ default: m.FAQ })));
-const FinalCTA = lazy(() => import('./components/FinalCTA').then(m => ({ default: m.FinalCTA })));
 const Footer = lazy(() => import('./components/Footer').then(m => ({ default: m.Footer })));
 
 const SectionFallback: React.FC<{ height?: string }> = ({ height = 'py-40' }) => (
@@ -71,11 +69,6 @@ const MainLayout: React.FC = () => {
           <FAQ />
         </Suspense>
 
-        {/* Final CTA Banner */}
-        <Suspense fallback={<SectionFallback />}>
-          <FinalCTA />
-        </Suspense>
-        
         {/* Footer info and badge */}
         <Suspense fallback={<SectionFallback height="py-16" />}>
           <Footer />
@@ -108,7 +101,6 @@ const MainLayout: React.FC = () => {
       )}
 
       {/* Persistent floating Voice Widget */}
-      <FloatingAgent />
       <RetellTrigger />
     </div>
   );
