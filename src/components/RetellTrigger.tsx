@@ -76,7 +76,11 @@ const TypingIndicator = () => (
 
 /* ═════════════════════════════════════════════════════════════ */
 
+const RETELL_DISABLED = import.meta.env.VITE_RETELL_DISABLED === 'true';
+
 export const RetellTrigger: React.FC = () => {
+  if (RETELL_DISABLED) return null;
+
   const [status, setStatus]             = useState<Status>('idle');
   const [isAgentSpeaking, setIsSpeaking] = useState(false);
   const [modalOpen, setModalOpen]       = useState(false);
