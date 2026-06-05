@@ -6,6 +6,7 @@ import { ThemeProvider } from './components/ThemeContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
+import { ChloeChat } from './components/ChloeChat';
 import { RetellTrigger } from './components/RetellTrigger';
 import { X, ChevronUp } from 'lucide-react';
 import { AdminPage } from './pages/AdminPage';
@@ -107,6 +108,7 @@ const MainLayout: React.FC = () => {
       )}
 
       {/* Persistent floating Voice Widget */}
+      <ChloeChat />
       <RetellTrigger />
     </div>
   );
