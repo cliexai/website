@@ -1,170 +1,160 @@
 import React from 'react';
-import { motion } from 'motion/react';
-import {
-  CreditCard, Download, ArrowUpRight,
-  CheckCircle, TrendingUp,
-} from 'lucide-react';
 
 interface BillingSectionProps {
   planName: string;
   userEmail: string;
+  onNavigate: (section: string) => void;
 }
 
-const INVOICES = [
-  { id: 'INV-2026-005', date: 'May 1, 2026',  amount: '$499.00', status: 'paid' as const },
-  { id: 'INV-2026-004', date: 'Apr 1, 2026',  amount: '$499.00', status: 'paid' as const },
-  { id: 'INV-2026-003', date: 'Mar 1, 2026',  amount: '$499.00', status: 'paid' as const },
-  { id: 'INV-2026-002', date: 'Feb 1, 2026',  amount: '$499.00', status: 'paid' as const },
-  { id: 'INV-2026-001', date: 'Jan 15, 2026', amount: '$1,998.00', status: 'paid' as const },
-];
-
-const PLAN_DETAILS: Record<string, { price: string; minutes: string; agents: string; features: string[] }> = {
-  'Starter':    { price: '$199', minutes: '1,000', agents: '1 Inbound Agent',           features: ['Standard FAQs', 'Email Support', '1,000 Call Min/mo'] },
-  'Pro Growth': { price: '$499', minutes: '2,500', agents: '3 Specialized Agents',      features: ['Full CRM & Calendar Sync', 'Smart Human Handoff', 'Priority Support'] },
-  'Enterprise': { price: 'Custom', minutes: '10,000+', agents: 'Unlimited Custom Agents', features: ['Custom Voice Cloning', 'Multi-Language', 'HIPAA/PCI Compliance', 'Dedicated Manager'] },
-};
-
-export const BillingSection: React.FC<BillingSectionProps> = ({ planName, userEmail }) => {
-  const plan = PLAN_DETAILS[planName] || PLAN_DETAILS['Starter'];
-  const minutesUsed = 1847;
-  const minutesLimit = parseInt(plan.minutes.replace(/,/g, '')) || 2500;
-  const usagePct = Math.min((minutesUsed / minutesLimit) * 100, 100);
-  const costPerMinute = planName === 'Enterprise' ? '$0.04' : planName === 'Pro Growth' ? '$0.08' : '$0.12';
-  const overageRate = '$0.15/min';
-
+export const BillingSection: React.FC<BillingSectionProps> = ({ onNavigate }) => {
   return (
-    <div className="flex flex-col gap-5 max-w-[1000px]">
-      <div>
-        <h2 className="text-lg font-extrabold text-white">Billing & Usage</h2>
-        <p className="text-xs text-white/40 mt-0.5">Manage your subscription, track usage, and view invoices.</p>
+    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-stack-lg max-w-container-max mx-auto w-full">
+      <div className="flex items-end justify-between mb-8">
+        <div>
+          <h2 className="font-headline-xl text-headline-xl text-primary mb-2">Account Management</h2>
+          <p className="text-body-lg text-on-surface-variant max-w-2xl">Configure your enterprise ecosystem and manage your premium subscription tiers below.</p>
+        </div>
+        <div className="voice-wave-container px-6 py-3 rounded-full bg-surface-container-high flex items-center gap-2">
+          <div className="voice-bar w-[3px] bg-primary rounded-full animate-[wave_1.2s_infinite]" style={{ animationDelay: '0.1s', height: '16px' }}></div>
+          <div className="voice-bar w-[3px] bg-primary rounded-full animate-[wave_1.2s_infinite]" style={{ animationDelay: '0.3s', height: '12px' }}></div>
+          <div className="voice-bar w-[3px] bg-primary rounded-full animate-[wave_1.2s_infinite]" style={{ animationDelay: '0.2s', height: '20px' }}></div>
+          <span className="ml-3 font-label-md text-label-md text-primary">Live Agent Active</span>
+        </div>
+      </div>
+      
+      <div className="flex gap-8 border-b border-outline-variant mb-8">
+        <button className="pb-4 font-label-md text-label-md text-on-surface-variant hover:text-primary transition-all" onClick={() => onNavigate('integrations')}>Integrations</button>
+        <button className="pb-4 font-label-md text-label-md text-primary border-b-2 border-primary transition-all" onClick={() => onNavigate('billing')}>Billing & Subscription</button>
       </div>
 
-      {/* Plan card + Usage */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Current plan */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-          className="relative overflow-hidden bg-gradient-to-br from-brand/15 via-brand/5 to-transparent border border-brand/20 rounded-xl p-5"
-        >
-          <div className="absolute top-0 right-0 w-40 h-40 bg-brand/10 rounded-full blur-[60px] pointer-events-none" />
-          <div className="relative z-10">
-            <span className="text-[10px] font-bold text-brand uppercase tracking-wider">Current Plan</span>
-            <h3 className="text-2xl font-extrabold text-white mt-1">{planName}</h3>
-            <div className="flex items-baseline gap-1 mt-1">
-              <span className="text-3xl font-extrabold text-white">{plan.price}</span>
-              {plan.price !== 'Custom' && <span className="text-xs text-white/40">/month</span>}
-            </div>
-            <p className="text-[11px] text-white/40 mt-2">{plan.agents}</p>
+      
+<div className="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
 
-            <div className="flex flex-col gap-1.5 mt-4">
-              {plan.features.map((f, i) => (
-                <div key={i} className="flex items-center gap-2 text-[11px] text-white/60">
-                  <CheckCircle className="w-3.5 h-3.5 text-brand shrink-0" />
-                  {f}
-                </div>
-              ))}
-            </div>
+<div className="lg:col-span-2 glass-card rounded-2xl p-8 border-2 border-primary/40">
+<div className="flex justify-between items-start mb-8">
+<div>
+<span className="text-primary font-label-md uppercase tracking-widest text-caption">Current Plan</span>
+<h3 className="font-headline-xl text-headline-xl">Professional Agent</h3>
+<p className="text-on-surface-variant">Unlimited calls, 10 custom voices, 24/7 support.</p>
+</div>
+<div className="text-right">
+<p className="text-headline-lg font-headline-lg text-primary">$499<span className="text-body-md font-normal text-on-surface-variant">/mo</span></p>
+<p className="text-caption text-on-surface-variant">Billed monthly</p>
+</div>
+</div>
+<div className="grid grid-cols-1 md:grid-cols-3 gap-6 py-6 border-y border-outline-variant">
+<div>
+<p className="text-caption text-on-surface-variant uppercase font-label-md mb-1">Next Billing Date</p>
+<p className="font-headline-md text-headline-md">Oct 24, 2024</p>
+</div>
+<div>
+<p className="text-caption text-on-surface-variant uppercase font-label-md mb-1">Next Amount</p>
+<p className="font-headline-md text-headline-md">$499.00</p>
+</div>
+<div>
+<p className="text-caption text-on-surface-variant uppercase font-label-md mb-1">Payment Method</p>
+<p className="flex items-center gap-2 font-headline-md text-headline-md">
+<span className="material-symbols-outlined">credit_card</span>
+                                •••• 4242
+                            </p>
+</div>
+</div>
+<div className="mt-8 flex gap-4">
+<button className="bg-primary text-on-primary px-8 py-3 rounded-xl font-label-md hover:shadow-lg transition-all">Upgrade to Enterprise</button>
+<button className="border border-outline text-on-surface px-8 py-3 rounded-xl font-label-md hover:bg-surface-container-high transition-all">Change Plan</button>
+</div>
+</div>
 
-            <div className="flex gap-2 mt-5">
-              <button
-                onClick={() => { window.location.href = '/get-started'; }}
-                className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-brand text-white rounded-lg text-[11px] font-semibold hover:bg-brand/90 active:scale-95 transition-all"
-              >
-                <ArrowUpRight className="w-3.5 h-3.5" /> Upgrade Plan
-              </button>
-            </div>
-          </div>
-        </motion.div>
+<div className="bg-surface-container-low rounded-2xl p-8 flex flex-col border border-outline-variant">
+<h4 className="font-headline-md text-headline-md mb-6">Usage Stats</h4>
+<div className="space-y-6 flex-grow">
+<div>
+<div className="flex justify-between text-label-md mb-2">
+<span className="text-on-surface-variant">Voice Minutes</span>
+<span className="text-primary font-bold">1,240 / 5,000</span>
+</div>
+<div className="h-2 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div className="h-full bg-primary" style={{ width: '25%' }}></div>
+</div>
+</div>
+<div>
+<div className="flex justify-between text-label-md mb-2">
+<span className="text-on-surface-variant">API Requests</span>
+<span className="text-primary font-bold">45,802 / 100k</span>
+</div>
+<div className="h-2 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div className="h-full bg-primary" style={{ width: '46%' }}></div>
+</div>
+</div>
+<div>
+<div className="flex justify-between text-label-md mb-2">
+<span className="text-on-surface-variant">Active Agents</span>
+<span className="text-primary font-bold">3 / 5</span>
+</div>
+<div className="h-2 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div className="h-full bg-primary" style={{ width: '60%' }}></div>
+</div>
+</div>
+</div>
+<button className="mt-8 text-primary font-label-md flex items-center justify-center gap-2 hover:opacity-80">
+                        View detailed usage logs <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
 
-        {/* Usage breakdown */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-          className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-5 flex flex-col"
-        >
-          <span className="text-[10px] font-bold text-white/50 uppercase tracking-wider mb-4">Usage This Period</span>
+<div className="glass-card rounded-2xl overflow-hidden border border-outline-variant">
+<div className="px-8 py-6 border-b border-outline-variant flex justify-between items-center">
+<h3 className="font-headline-md text-headline-md">Invoice History</h3>
+<button className="text-primary font-label-md hover:opacity-80">Download All (PDF)</button>
+</div>
+<table className="w-full text-left">
+<thead className="bg-surface-container-high">
+<tr className="text-label-md text-on-surface-variant">
+<th className="px-8 py-4">Invoice ID</th>
+<th className="px-8 py-4">Date</th>
+<th className="px-8 py-4">Amount</th>
+<th className="px-8 py-4">Status</th>
+<th className="px-8 py-4 text-right">Action</th>
+</tr>
+</thead>
+<tbody className="divide-y divide-outline-variant">
+<tr className="hover:bg-surface-container-high/50 transition-colors">
+<td className="px-8 py-4 font-label-md">INV-2024-008</td>
+<td className="px-8 py-4 text-on-surface-variant">Sep 24, 2024</td>
+<td className="px-8 py-4">$499.00</td>
+<td className="px-8 py-4">
+<span className="px-2 py-1 bg-green-900/30 text-green-400 text-caption rounded-lg border border-green-900">Paid</span>
+</td>
+<td className="px-8 py-4 text-right">
+<button className="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">download</button>
+</td>
+</tr>
+<tr className="hover:bg-surface-container-high/50 transition-colors">
+<td className="px-8 py-4 font-label-md">INV-2024-007</td>
+<td className="px-8 py-4 text-on-surface-variant">Aug 24, 2024</td>
+<td className="px-8 py-4">$499.00</td>
+<td className="px-8 py-4">
+<span className="px-2 py-1 bg-green-900/30 text-green-400 text-caption rounded-lg border border-green-900">Paid</span>
+</td>
+<td className="px-8 py-4 text-right">
+<button className="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">download</button>
+</td>
+</tr>
+<tr className="hover:bg-surface-container-high/50 transition-colors">
+<td className="px-8 py-4 font-label-md">INV-2024-006</td>
+<td className="px-8 py-4 text-on-surface-variant">Jul 24, 2024</td>
+<td className="px-8 py-4">$499.00</td>
+<td className="px-8 py-4">
+<span className="px-2 py-1 bg-green-900/30 text-green-400 text-caption rounded-lg border border-green-900">Paid</span>
+</td>
+<td className="px-8 py-4 text-right">
+<button className="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">download</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs text-white/60 font-medium">Minutes Used</span>
-            <span className="text-xs font-mono font-bold text-white">{minutesUsed.toLocaleString()} / {plan.minutes}</span>
-          </div>
-          <div className="w-full h-2.5 rounded-full bg-white/5 overflow-hidden mb-4">
-            <motion.div initial={{ width: 0 }} animate={{ width: `${usagePct}%` }} transition={{ duration: 1, delay: 0.3 }}
-              className={`h-full rounded-full ${usagePct > 90 ? 'bg-red-500' : usagePct > 70 ? 'bg-amber-500' : 'bg-brand'}`}
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-3 mt-auto">
-            <div className="bg-white/[0.03] border border-white/[0.04] rounded-lg p-3">
-              <p className="text-[10px] text-white/40 font-medium">Cost / Minute</p>
-              <p className="text-sm font-bold text-white mt-0.5">{costPerMinute}</p>
-            </div>
-            <div className="bg-white/[0.03] border border-white/[0.04] rounded-lg p-3">
-              <p className="text-[10px] text-white/40 font-medium">Overage Rate</p>
-              <p className="text-sm font-bold text-white mt-0.5">{overageRate}</p>
-            </div>
-            <div className="bg-white/[0.03] border border-white/[0.04] rounded-lg p-3">
-              <p className="text-[10px] text-white/40 font-medium">Next Renewal</p>
-              <p className="text-sm font-bold text-white mt-0.5">Jun 1, 2026</p>
-            </div>
-            <div className="bg-white/[0.03] border border-white/[0.04] rounded-lg p-3">
-              <p className="text-[10px] text-white/40 font-medium">Est. This Month</p>
-              <p className="text-sm font-bold text-white mt-0.5 flex items-center gap-1">
-                $499.00 <TrendingUp className="w-3 h-3 text-emerald-400" />
-              </p>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Payment method */}
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-        className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-5 flex items-center justify-between"
-      >
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-8 bg-gradient-to-r from-blue-600 to-blue-500 rounded-md flex items-center justify-center">
-            <CreditCard className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <p className="text-xs font-semibold text-white">Visa ending in •••• 4242</p>
-            <p className="text-[10px] text-white/35 mt-0.5">Expires 12/2028 · {userEmail}</p>
-          </div>
-        </div>
-        <button className="px-3 py-1.5 rounded-lg border border-white/10 text-[11px] font-semibold text-white/60 hover:text-white hover:bg-white/5 transition-all">
-          Update
-        </button>
-      </motion.div>
-
-      {/* Invoice history */}
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-        className="bg-white/[0.02] border border-white/[0.06] rounded-xl overflow-hidden"
-      >
-        <div className="p-4 border-b border-white/[0.06]">
-          <h3 className="text-sm font-bold text-white">Invoice History</h3>
-        </div>
-        <div className="divide-y divide-white/[0.04]">
-          {INVOICES.map((inv) => (
-            <div key={inv.id} className="flex items-center justify-between px-4 py-3 hover:bg-white/[0.02] transition-colors">
-              <div className="flex items-center gap-3">
-                <CheckCircle className="w-4 h-4 text-emerald-500/60 shrink-0" />
-                <div>
-                  <p className="text-xs font-semibold text-white">{inv.id}</p>
-                  <p className="text-[10px] text-white/35">{inv.date}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <span className="text-xs font-bold text-white">{inv.amount}</span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                  {inv.status === 'paid' ? 'Paid' : 'Pending'}
-                </span>
-                <button className="w-7 h-7 rounded-lg flex items-center justify-center text-white/20 hover:text-white/50 hover:bg-white/5 transition-all" title="Download">
-                  <Download className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="px-4 py-3 border-t border-white/[0.04] text-[10px] text-white/25 text-center">
-          Showing last 5 invoices · <button className="text-brand hover:underline">View all</button>
-        </div>
-      </motion.div>
     </div>
   );
 };

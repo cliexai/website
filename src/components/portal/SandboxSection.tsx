@@ -1,156 +1,143 @@
 import React, { useState } from 'react';
-import { Phone, Mic, Send, Loader2 } from 'lucide-react';
 
 export const SandboxSection: React.FC = () => {
-  const [messages, setMessages] = useState<{ speaker: 'agent' | 'customer'; text: string }[]>([
-    { speaker: 'agent', text: "Hi! I'm your ClieX AI sandbox agent. Pick a scenario or type anything below to test my voice and text response!" }
-  ]);
-  const [inputText, setInputText] = useState('');
-  const [isListening, setIsListening] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
-
-  const handleSendMessage = (text: string) => {
-    if (!text.trim()) return;
-    const userMsg = text;
-    setMessages(prev => [...prev, { speaker: 'customer', text: userMsg }]);
-    setInputText('');
-    setIsTyping(true);
-
-    setTimeout(() => {
-      let reply = "I understand you're asking about that. As a ClieX AI Voice Agent, I can connect to your databases in real-time, speak 29+ languages, and answer instantly. Would you like to book a full demo?";
-      const lower = userMsg.toLowerCase();
-      if (lower.includes('pizza') || lower.includes('order') || lower.includes('food')) {
-        reply = "Sure! I can take your food order, suggest appetizers, calculate tax, apply discount codes, and inject the order directly into your POS system. Shall we set this up for your restaurant?";
-      } else if (lower.includes('book') || lower.includes('appointment') || lower.includes('schedule')) {
-        reply = "I can sync directly with Google Calendar, Outlook, or your custom booking CRM. I'll read available slots, book the customer in, and send text confirmations instantly. What calendar system do you use?";
-      } else if (lower.includes('price') || lower.includes('pricing') || lower.includes('cost')) {
-        reply = "Our plans start at $199/month for the Starter tier, up to custom Enterprise pricing. Check the Billing section for full details! I can also custom-quote enterprise usage. What are your monthly call volumes?";
-      }
-      setMessages(prev => [...prev, { speaker: 'agent', text: reply }]);
-      setIsTyping(false);
-    }, 1200);
-  };
-
-  const handleMicClick = () => {
-    if (isListening) {
-      setIsListening(false);
-    } else {
-      setIsListening(true);
-      setTimeout(() => {
-        const prompts = [
-          "Can you book a dentist appointment for me?",
-          "I want to order a large pepperoni pizza",
-          "What are your agency services and pricing?"
-        ];
-        const randomPrompt = prompts[Math.floor(Math.random() * prompts.length)];
-        handleSendMessage(randomPrompt);
-        setIsListening(false);
-      }, 3000);
-    }
-  };
-
+  const [isActive, setIsActive] = useState(true);
   return (
-    <div className="flex flex-col h-full max-w-4xl mx-auto w-full">
-      {/* Header */}
-      <div className="flex items-center justify-between pb-4 border-b border-white/[0.06] shrink-0 mb-4">
-        <div className="flex items-center gap-3">
-          <Phone className="w-5 h-5 text-brand animate-bounce" />
-          <div>
-            <h3 className="text-sm font-bold text-white flex items-center gap-1.5 mb-0.5">
-              Interactive AI Audio Simulator
-            </h3>
-            <p className="text-xs text-white/40">
-              Synthesizing real-time voice response from text. Click mic to speak!
-            </p>
-          </div>
-        </div>
-        {(isListening || isTyping) && (
-          <div className="flex items-center gap-0.5 h-5 select-none">
-            <span className="w-1 bg-brand animate-[bounce_0.8s_infinite_100ms] h-full rounded-full" />
-            <span className="w-1 bg-brand animate-[bounce_0.8s_infinite_300ms] h-2/3 rounded-full" />
-            <span className="w-1 bg-brand animate-[bounce_0.8s_infinite_200ms] h-4/5 rounded-full" />
-            <span className="w-1 bg-brand animate-[bounce_0.8s_infinite_400ms] h-1/2 rounded-full" />
-            <span className="w-1 bg-brand animate-[bounce_0.8s_infinite_150ms] h-full rounded-full" />
-          </div>
-        )}
-      </div>
+    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-container-max mx-auto w-full">
+      
+<div className="flex flex-col gap-stack-lg">
 
-      {/* Messages */}
-      <div className="flex-1 py-4 flex flex-col gap-4 overflow-y-auto pr-2">
-        {messages.map((msg, i) => (
-          <div key={i} className={`flex flex-col ${msg.speaker === 'agent' ? 'items-start' : 'items-end'}`}>
-            <span className="text-[9px] font-bold tracking-wider text-white/35 uppercase mb-1">
-              {msg.speaker === 'agent' ? 'ClieX AI Assistant' : 'You (Sandbox Caller)'}
-            </span>
-            <p className={`text-xs md:text-sm leading-relaxed max-w-[80%] rounded-2xl p-4 font-medium ${
-              msg.speaker === 'agent'
-                ? 'bg-white/5 border border-white/5 text-white rounded-tl-sm shadow-lg shadow-black/20'
-                : 'bg-brand text-white rounded-tr-sm shadow-lg shadow-brand/20'
-            }`}>
-              {msg.text}
-            </p>
-          </div>
-        ))}
-        {isTyping && (
-          <div className="flex flex-col items-start">
-            <span className="text-[9px] font-bold tracking-wider text-white/35 uppercase mb-1">ClieX AI Assistant</span>
-            <div className="bg-white/5 border border-white/5 rounded-2xl px-5 py-4 rounded-tl-sm flex gap-1.5 items-center">
-              <span className="w-2 h-2 bg-white/40 rounded-full animate-bounce" />
-              <span className="w-2 h-2 bg-white/40 rounded-full animate-bounce [animation-delay:0.2s]" />
-              <span className="w-2 h-2 bg-white/40 rounded-full animate-bounce [animation-delay:0.4s]" />
-            </div>
-          </div>
-        )}
-      </div>
+<div className="flex justify-between items-end">
+<div>
+<h2 className="font-headline-lg text-headline-lg text-on-surface">My Agent Configuration</h2>
+<p className="text-on-surface-variant mt-2 max-w-2xl font-body-md">Tailor your AI agent's identity and interaction style. Changes take effect immediately across all connected channels.</p>
+</div>
+<div className="bg-surface-container-low rounded-xl p-4 flex items-center gap-4 shadow-sm border border-outline-variant">
+<div className="flex flex-col">
+<span className="text-label-md font-bold text-on-surface-variant">Agent Status</span>
+<span className={isActive ? "text-primary font-bold" : "text-on-surface-variant font-bold"} id="status-text">{isActive ? "Active" : "Paused"}</span>
+</div>
+<label className="relative inline-flex items-center cursor-pointer">
+<input defaultChecked className="sr-only peer" onChange={(e) => setIsActive(e.target.checked)} type="checkbox" />
+<div className="w-14 h-8 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:start-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
 
-      {/* Quick scenarios */}
-      {messages.length <= 2 && !isTyping && (
-        <div className="pb-3 flex flex-wrap gap-2 shrink-0">
-          {['📅 Book a Demo Call', '💰 What are your prices?', '🍕 Take a food order'].map((q) => (
-            <button
-              key={q}
-              onClick={() => handleSendMessage(q.replace(/^[^\s]+\s/, ''))}
-              className="text-[10px] bg-white/5 border border-white/[0.06] text-white/60 hover:border-brand/30 hover:text-white/80 px-3 py-1.5 rounded-full font-semibold active:scale-95 transition-all"
-            >
-              {q}
-            </button>
-          ))}
-        </div>
-      )}
+<div className="grid grid-cols-12 gap-gutter">
 
-      {/* Input bar */}
-      <div className="pt-4 border-t border-white/[0.06] flex gap-3 items-center shrink-0">
-        <button
-          onClick={handleMicClick}
-          className={`w-12 h-12 rounded-full flex items-center justify-center active:scale-90 transition-all shadow-lg shrink-0 ${
-            isListening
-              ? 'bg-red-500 text-white animate-pulse shadow-red-500/20'
-              : 'bg-brand/10 text-brand hover:bg-brand/20 border border-brand/20'
-          }`}
-          title={isListening ? 'Listening... click to stop' : 'Click to talk / simulate voice input'}
-        >
-          {isListening ? <Loader2 className="w-5 h-5 animate-spin" /> : <Mic className="w-5 h-5" />}
-        </button>
-        <form
-          onSubmit={(e) => { e.preventDefault(); handleSendMessage(inputText); }}
-          className="flex-1 flex gap-3 relative"
-        >
-          <input
-            type="text"
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-            placeholder={isListening ? 'Listening to voice... click mic to stop' : 'Try saying: "Book appointment", "Pizza order", or custom...'}
-            disabled={isListening}
-            className="flex-1 bg-white/5 border border-white/[0.06] rounded-full pl-5 pr-20 py-3.5 text-sm text-white outline-none focus:border-brand/40 placeholder-white/30 shadow-inner"
-          />
-          <button
-            type="submit"
-            className="absolute right-1.5 top-1.5 bottom-1.5 bg-brand hover:bg-brand/90 text-white rounded-full px-5 text-xs font-semibold active:scale-95 transition-all shadow-md flex items-center gap-1.5"
-          >
-            <Send className="w-3.5 h-3.5" /> Send
-          </button>
-        </form>
-      </div>
+<div className="col-span-12 lg:col-span-8 bg-surface-container rounded-xl p-stack-md shadow-xl border border-outline-variant">
+<h3 className="font-headline-md text-headline-md mb-stack-md flex items-center gap-2">
+<span className="material-symbols-outlined text-primary">edit_note</span>
+                        Core Identity
+                    </h3>
+<form className="space-y-stack-md">
+
+<div className="flex flex-col gap-2">
+<label className="font-label-md text-on-surface-variant ml-1">Agent Name</label>
+<input className="bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-on-surface" placeholder="Enter a name for your agent" type="text" value="ClieX AI Assistant" />
+</div>
+
+<div className="flex flex-col gap-2">
+<label className="font-label-md text-on-surface-variant ml-1">Primary Language</label>
+<select className="bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-on-surface appearance-none">
+<option>English (US) - Professional Neutral</option>
+<option>English (UK) - Sophisticated</option>
+<option>Spanish (ES) - Warm &amp; Friendly</option>
+<option>German (DE) - Technical &amp; Precise</option>
+<option>French (FR) - Elegant</option>
+</select>
+</div>
+
+<div className="flex flex-col gap-2">
+<label className="font-label-md text-on-surface-variant ml-1">Initial Greeting Message</label>
+<textarea className="bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none text-on-surface" rows={4}>Hello! Thank you for calling ClieX AI. My name is Alex, your dedicated voice assistant. How can I assist you with our AI services today?</textarea>
+<span className="text-caption text-on-surface-variant text-right">142 / 500 characters</span>
+</div>
+
+<div className="pt-stack-md flex justify-end gap-stack-sm">
+<button className="px-6 py-3 border border-outline text-on-surface-variant font-label-md rounded-lg hover:bg-surface-container-high hover:text-on-surface transition-all" type="button">Discard Changes</button>
+<button className="px-10 py-3 bg-primary text-on-primary font-bold font-label-md rounded-lg shadow-lg shadow-primary/20 hover:-translate-y-0.5 active:scale-95 transition-all" type="submit">Save Changes</button>
+</div>
+</form>
+</div>
+
+<div className="col-span-12 lg:col-span-4 flex flex-col gap-gutter">
+
+<div className="bg-surface-container-low rounded-xl p-stack-md border border-outline-variant overflow-hidden relative group">
+<div className="flex justify-between items-start mb-stack-md relative z-10">
+<h3 className="font-label-md text-on-surface-variant uppercase tracking-widest">Voice Preview</h3>
+<button className="p-2 bg-primary rounded-full text-on-primary shadow-md hover:scale-110 active:scale-90 transition-all">
+<span className="material-symbols-outlined" style={{ fontVariationSettings: '\'FILL\' 1' }}>play_arrow</span>
+</button>
+</div>
+<div className="flex items-center justify-center gap-1.5 h-32 mb-stack-md relative z-10">
+<div className="voice-bar w-1.5 bg-primary rounded-full" style={{ animationDelay: '0.1s' }}></div>
+<div className="voice-bar w-1.5 bg-primary/60 rounded-full" style={{ animationDelay: '0.3s' }}></div>
+<div className="voice-bar w-1.5 bg-primary rounded-full" style={{ animationDelay: '0.2s' }}></div>
+<div className="voice-bar w-1.5 bg-primary/40 rounded-full" style={{ animationDelay: '0.5s' }}></div>
+<div className="voice-bar w-1.5 bg-primary rounded-full" style={{ animationDelay: '0.4s' }}></div>
+<div className="voice-bar w-1.5 bg-primary/60 rounded-full" style={{ animationDelay: '0.6s' }}></div>
+<div className="voice-bar w-1.5 bg-primary rounded-full" style={{ animationDelay: '0.1s' }}></div>
+<div className="voice-bar w-1.5 bg-primary/60 rounded-full" style={{ animationDelay: '0.3s' }}></div>
+<div className="voice-bar w-1.5 bg-primary rounded-full" style={{ animationDelay: '0.2s' }}></div>
+</div>
+<div className="text-center relative z-10">
+<p className="font-label-md text-on-surface-variant mb-1">Current Voice Model</p>
+<p className="font-bold text-primary">Quantum-Neural V4 (BETA)</p>
+</div>
+<div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+</div>
+
+<div className="bg-surface-container-highest rounded-xl p-stack-md text-on-surface shadow-md border border-outline-variant">
+<div className="flex items-center gap-3 mb-4">
+<span className="material-symbols-outlined text-primary">tips_and_updates</span>
+<p className="font-bold">Configuration Tips</p>
+</div>
+<p className="text-caption text-on-surface-variant leading-relaxed">
+                            Clear and concise greeting messages improve user engagement by up to 40%. Try to keep your opening statement under 15 seconds of spoken time for optimal performance.
+                        </p>
+<div className="mt-4 pt-4 border-t border-outline-variant">
+<a className="text-primary font-label-md flex items-center gap-1 hover:underline" href="#">
+                                Read Documentation 
+                                <span className="material-symbols-outlined text-sm">open_in_new</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+
+<div className="bg-surface-container-high rounded-xl p-stack-md border border-outline-variant grid grid-cols-1 md:grid-cols-3 gap-stack-md">
+<div className="flex gap-4">
+<div className="h-12 w-12 bg-surface-container-low border border-outline-variant rounded-lg flex items-center justify-center text-primary">
+<span className="material-symbols-outlined">speed</span>
+</div>
+<div>
+<h4 className="font-bold text-on-surface">Response Speed</h4>
+<p className="text-caption text-on-surface-variant">Fast (150ms latency)</p>
+</div>
+</div>
+<div className="flex gap-4">
+<div className="h-12 w-12 bg-surface-container-low border border-outline-variant rounded-lg flex items-center justify-center text-primary">
+<span className="material-symbols-outlined">psychology</span>
+</div>
+<div>
+<h4 className="font-bold text-on-surface">Intelligence Level</h4>
+<p className="text-caption text-on-surface-variant">GPT-4 Omni Powered</p>
+</div>
+</div>
+<div className="flex gap-4">
+<div className="h-12 w-12 bg-surface-container-low border border-outline-variant rounded-lg flex items-center justify-center text-primary">
+<span className="material-symbols-outlined">security</span>
+</div>
+<div>
+<h4 className="font-bold text-on-surface">Privacy Guard</h4>
+<p className="text-caption text-on-surface-variant">PII Masking Enabled</p>
+</div>
+</div>
+</div>
+</div>
+
     </div>
   );
 };

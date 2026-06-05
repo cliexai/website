@@ -7,10 +7,7 @@ import {
   KeyRound,
 } from 'lucide-react';
 import { supabase, type Lead } from '../lib/supabaseClient';
-
-// ─── Admin access control ──────────────────────────────────────
-const ADMIN_EMAILS = ['cliexai@gmail.com', 'amiador017@gmail.com'];
-const isAdmin = (email?: string | null) => !!email && ADMIN_EMAILS.includes(email.toLowerCase());
+import { isAdminEmail as isAdmin } from '../lib/adminEmails';
 
 // ─── View state machine ────────────────────────────────────────
 type AdminView = 'loading' | 'login' | 'verify-code' | 'dashboard';

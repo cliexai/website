@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Menu } from 'lucide-react';
+import Lenis from 'lenis';
 import { PortalSidebar, type PortalSection } from './PortalSidebar';
 import { DashboardSection } from './DashboardSection';
 import { CallHistorySection } from './CallHistorySection';
@@ -19,13 +20,13 @@ interface PortalShellProps {
 }
 
 const SECTION_TITLES: Record<PortalSection, string> = {
-  dashboard:    'Dashboard',
-  calls:        'Call History',
-  sandbox:      'Agent Sandbox',
+  dashboard:    'Overview',
+  calls:        'Call Logs',
+  sandbox:      'My Agent',
   knowledge:    'Knowledge Base',
   integrations: 'Integrations',
-  support:      'Support',
-  billing:      'Billing & Usage',
+  support:      'Help Center',
+  billing:      'Billing',
   settings:     'Settings',
 };
 
@@ -35,6 +36,49 @@ export const PortalShell: React.FC<PortalShellProps> = ({
   const [activeSection, setActiveSection] = useState<PortalSection>('dashboard');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const mainContentRef = useRef<HTMLElement | null>(null);
+  const sidebarNavRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    document.title = `${SECTION_TITLES[activeSection]} | ClieX AI`;
+  }, [activeSection]);
+
+  // Lenis smooth scroll for the main content + sidebar nav
+  useEffect(() => {
+    if (!mainContentRef.current || !sidebarNavRef.current) return;
+
+    const mainLenis = new Lenis({
+      wrapper: mainContentRef.current,
+      duration: 1.2,
+      easing: (t) => 1 - Math.pow(1 - t, 3),
+      smoothWheel: true,
+      wheelMultiplier: 1,
+      touchMultiplier: 0.8,
+    });
+
+    const sidebarLenis = new Lenis({
+      wrapper: sidebarNavRef.current,
+      duration: 1.0,
+      easing: (t) => 1 - Math.pow(1 - t, 3),
+      smoothWheel: true,
+      wheelMultiplier: 0.8,
+      touchMultiplier: 0.6,
+    });
+
+    let rafId: number;
+    const raf = (time: number) => {
+      mainLenis.raf(time);
+      sidebarLenis.raf(time);
+      rafId = requestAnimationFrame(raf);
+    };
+    rafId = requestAnimationFrame(raf);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      mainLenis.destroy();
+      sidebarLenis.destroy();
+    };
+  }, []);
 
   // Determine plan from localStorage or default
   const planName = (() => {
@@ -66,11 +110,11 @@ export const PortalShell: React.FC<PortalShellProps> = ({
       case 'knowledge':
         return <KnowledgeBaseSection />;
       case 'integrations':
-        return <IntegrationsSection />;
+        return <IntegrationsSection onNavigate={navigateTo} />;
       case 'support':
         return <SupportSection />;
       case 'billing':
-        return <BillingSection planName={planName} userEmail={userEmail} />;
+        return <BillingSection planName={planName} userEmail={userEmail} onNavigate={navigateTo} />;
       case 'settings':
         return <SettingsSection userName={userName} userEmail={userEmail} userAvatar={userAvatar} onSignOut={onSignOut} />;
       default:
@@ -93,12 +137,13 @@ export const PortalShell: React.FC<PortalShellProps> = ({
         onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
         mobileOpen={mobileMenuOpen}
         onMobileClose={() => setMobileMenuOpen(false)}
+        navRef={sidebarNavRef}
       />
 
       {/* Main content area */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Top bar (mobile menu button + section title) */}
-        <header className="h-12 md:h-14 border-b border-white/[0.06] flex items-center justify-between px-4 md:px-6 shrink-0 bg-[#0c0c0c]">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden bg-background">
+        {/* Top bar (mobile menu button + search + notifications + profile) */}
+        <header className="sticky top-0 w-full z-40 bg-surface/60 backdrop-blur-xl border-b border-outline-variant flex justify-between items-center px-4 md:px-8 py-3 h-14 shrink-0">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setMobileMenuOpen(true)}
@@ -107,20 +152,59 @@ export const PortalShell: React.FC<PortalShellProps> = ({
             >
               <Menu className="w-5 h-5" />
             </button>
-            <h2 className="text-sm font-bold text-white tracking-tight">
-              {SECTION_TITLES[activeSection]}
-            </h2>
+            
+            {/* Search bar inside header (desktop only) */}
+            <div className="hidden sm:flex items-center bg-surface-container-high px-4 py-2 rounded-full w-64 md:w-80 lg:w-96 border border-outline-variant/50 focus-within:border-primary/50 transition-all">
+              <span className="material-symbols-outlined text-on-surface-variant mr-2 text-[18px]">search</span>
+              <input
+                className="bg-transparent border-none p-0 focus:ring-0 text-[13px] w-full placeholder:text-on-surface-variant/50 text-on-surface outline-none"
+                placeholder="Search logs, agents or settings..."
+                type="text"
+              />
+            </div>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="hidden md:flex items-center gap-2 text-[10px] text-white/30">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-              <span>Agent Online</span>
+
+          <div className="flex items-center gap-4">
+            {/* Notification trigger */}
+            <button className="hover:bg-surface-container-high rounded-full p-2 transition-all active:scale-90 relative text-on-surface-variant">
+              <span className="material-symbols-outlined text-[20px]">notifications</span>
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full"></span>
+            </button>
+
+            {/* Profile badge (pl-4 border-l border-outline-variant) */}
+            <div className="flex items-center gap-3 pl-4 border-l border-outline-variant">
+              <div className="text-right hidden md:block">
+                <p className="font-label-md text-label-md text-on-surface">{userName}</p>
+                <p className="text-caption text-on-surface-variant">{planName} Plan</p>
+              </div>
+              
+              {userAvatar ? (
+                <>
+                  <img
+                    alt="User Profile"
+                    className="w-8 h-8 rounded-full border-2 border-primary object-cover"
+                    src={userAvatar}
+                    referrerPolicy="no-referrer"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                    }}
+                  />
+                  <div className="hidden w-8 h-8 rounded-full bg-gradient-to-br from-primary to-purple-800 flex items-center justify-center text-xs font-bold text-white">
+                    {userName.charAt(0).toUpperCase()}
+                  </div>
+                </>
+              ) : (
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-purple-800 flex items-center justify-center text-xs font-bold text-white">
+                  {userName.charAt(0).toUpperCase()}
+                </div>
+              )}
             </div>
           </div>
         </header>
 
         {/* Content */}
-        <main className={`flex-1 overflow-y-auto overflow-x-hidden ${isFullHeightSection ? '' : 'p-4 md:p-6 lg:p-8'}`}>
+        <main ref={mainContentRef} className={`flex-1 overflow-y-auto overflow-x-hidden ${isFullHeightSection ? '' : 'p-6 md:p-8 lg:p-10'}`}>
           <AnimatePresence mode="wait">
             <motion.div
               key={activeSection}

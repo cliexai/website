@@ -165,12 +165,12 @@ export const VoiceDashboardMockup: React.FC = () => {
           </div>
           
           {/* Tabs selector */}
-          <div className="flex items-center bg-black/5 dark:bg-white/5 p-0.5 rounded-lg border border-black/5 dark:border-white/5">
+          <div className="flex items-center bg-white/10 dark:bg-white/5 backdrop-blur-xl p-0.5 rounded-lg border border-white/20 dark:border-white/10 shadow-lg">
             <button
               onClick={() => setActiveTab('logs')}
               className={`px-3 py-1 rounded-md text-[11px] font-semibold transition-all ${
                 activeTab === 'logs'
-                  ? 'bg-white dark:bg-white/10 text-black dark:text-white shadow-sm'
+                  ? 'bg-white/80 dark:bg-white/20 backdrop-blur-md text-black dark:text-white shadow-sm'
                   : 'text-black/55 dark:text-white/50 hover:text-black dark:hover:text-white'
               }`}
             >
@@ -178,8 +178,8 @@ export const VoiceDashboardMockup: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveTab('sandbox')}
-              className={`px-4 py-1.5 rounded-lg text-[11px] font-semibold transition-all flex items-center gap-1.5 ${
-                activeTab === 'sandbox' ? 'bg-black/10 dark:bg-white/10 text-black dark:text-white' : 'text-black/50 dark:text-white/50 hover:text-black dark:hover:text-white'
+              className={`px-4 py-1.5 rounded-lg text-[11px] font-semibold transition-all flex items-center gap-1.5 backdrop-blur-md ${
+                activeTab === 'sandbox' ? 'bg-white/80 dark:bg-white/20 text-black dark:text-white shadow-sm' : 'text-black/50 dark:text-white/50 hover:text-black dark:hover:text-white'
               }`}
             >
               <Sparkles className="w-3 h-3 text-brand" />

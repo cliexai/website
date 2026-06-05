@@ -1,6 +1,6 @@
 import React from 'react';
 import { LogoMark } from './SharedPrimitives';
-import { Globe, ArrowUpRight, Mail } from 'lucide-react';
+import { Mail } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   const socialLinks = [
@@ -51,166 +51,63 @@ export const Footer: React.FC = () => {
     }
   ];
 
-  type FooterItem = { label: string; href?: string; type?: 'header'; badge?: string; highlight?: boolean };
-  const linkSections: { title: string; items: FooterItem[] }[] = [
-    {
-      title: 'Solutions',
-      items: [
-        { type: 'header', label: 'By Industry' },
-        { label: 'Real Estate', href: '#services' },
-        { label: 'E-commerce', href: '#services' },
-        { label: 'Healthcare & Clinics', href: '#services' },
-        { label: 'Financial Services', href: '#services' },
-        { label: 'Automotive Dealerships', href: '#services' },
-        { type: 'header', label: 'By Use Case' },
-        { label: 'Lead Generation', href: '#lead-form' },
-        { label: 'Appointment Booking', href: '#lead-form' },
-        { label: '24/7 Customer Support', href: '#services' },
-      ]
-    },
+  const linkSections = [
     {
       title: 'Product',
       items: [
-        { label: 'Voice Agent Console', href: '#services' },
-        { label: 'Multi-LLM Routing', href: '#services' },
-        { label: 'Twilio Integration', href: '#services' },
-        { label: 'Multilingual Engine', href: '#services' },
-        { label: 'Instant API Webhooks', href: '#services' },
-        { label: 'Simple Pricing', href: '#pricing' },
-      ]
+        { label: 'Features', href: '#services' },
+        { label: 'Integrations', href: '#services' },
+        { label: 'Pricing', href: '#pricing' },
+      ],
     },
     {
-      title: 'Resources',
+      title: 'Company',
       items: [
-        { label: 'Documentation', href: '#faq', badge: 'API' },
-        { label: 'Integration Guides', href: '#faq' },
-        { label: 'Voice Demo Gallery', href: '#services' },
-        { label: 'Agency Blog', href: '#services' },
-        { label: 'FAQ Support', href: '#faq' },
-      ]
+        { label: 'About', href: '#about' },
+        { label: 'Careers', href: '#' },
+        { label: 'Blog', href: '#' },
+      ],
     },
     {
-      title: 'Sales & Support',
+      title: 'Support',
       items: [
-        { label: 'Book a Demo Call', href: '#lead-form', highlight: true },
-        { label: 'WhatsApp Sales', href: 'https://wa.me/8801568031212' },
-        { label: 'Email Outreach', href: 'https://mail.google.com/mail/?view=cm&fs=1&to=cliexai@gmail.com' },
-        { type: 'header', label: 'Legal' },
+        { label: 'Help Center', href: '#faq' },
+        { label: 'Documentation', href: '#faq' },
+        { label: 'Status', href: '#' },
+      ],
+    },
+    {
+      title: 'Legal',
+      items: [
         { label: 'Privacy Policy', href: '#' },
-        { label: 'Terms of Use', href: '#' },
-        { label: 'Data Security (DPA)', href: '#' },
-      ]
-    }
+        { label: 'Terms of Service', href: '#' },
+        { label: 'Cookie Policy', href: '#' },
+      ],
+    },
   ];
 
   return (
-    <footer className="w-full relative z-10 border-t border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-[#0c0c0c]/80 backdrop-blur-md py-16 md:py-20">
-      <div className="max-w-6xl mx-auto px-6 flex flex-col lg:flex-row gap-12 lg:gap-8 justify-between">
-        
-        {/* Left Column - Brand & Info */}
-        <div className="flex flex-col items-start max-w-sm lg:w-1/4">
-          <a href="#" className="flex items-center gap-2 text-brand mb-4 group select-none">
-            <LogoMark className="w-8 h-8 text-brand group-hover:scale-110 transition-transform duration-300" />
-            <span className="text-base font-black tracking-wider text-black dark:text-white">
-              ClieX AI
-            </span>
+    <footer className="bg-surface-container-lowest py-stack-xl border-t border-outline-variant">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center px-margin-desktop max-w-container-max mx-auto gap-8">
+        {/* Brand column */}
+        <div className="flex flex-col gap-4">
+          <a href="#" className="flex items-center gap-2">
+            <LogoMark className="w-7 h-7" />
+            <span className="font-headline text-headline-md font-bold text-white">Clie<span className="text-primary">X</span> AI Solutions</span>
           </a>
-          <p className="text-xs text-black/55 dark:text-white/55 leading-relaxed font-medium">
-            Building 24/7 AI Voice Agents that operate at native fluency to book leads, secure appointments, and boost business revenues.
+          <p className="text-on-surface-variant max-w-xs">
+            Building the future of human-AI communication, one call at a time.
           </p>
-          
-          <div className="mt-4 flex flex-wrap gap-2">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 text-[9px] text-brand font-bold uppercase select-none">
-              <Globe className="w-3 h-3" />
-              <span>Global Delivery & Hosting</span>
-            </div>
-          </div>
 
-          {/* Creative Status Badge */}
-          <div className="mt-6 flex items-center gap-2 select-none border border-black/5 dark:border-white/5 bg-black/[0.02] dark:bg-white/[0.02] px-2.5 py-1.5 rounded-xl">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-            </span>
-            <span className="text-[9px] font-bold text-black/50 dark:text-white/40 tracking-wider uppercase">
-              All Systems Operational
-            </span>
-          </div>
-
-          <p className="text-[10px] text-black/40 dark:text-white/30 font-semibold mt-8 select-none">
-            © {new Date().getFullYear()} ClieX AI. All rights reserved.
-          </p>
-        </div>
-
-        {/* Right Columns - Links Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:w-3/4">
-          {linkSections.map((section) => (
-            <div key={section.title} className="flex flex-col gap-4">
-              <span className="text-[10px] font-extrabold text-black/40 dark:text-white/30 uppercase tracking-[0.2em] select-none">
-                {section.title}
-              </span>
-              <div className="flex flex-col gap-2.5">
-                {section.items.map((item, idx) => {
-                  if (item.type === 'header') {
-                    return (
-                      <span
-                        key={idx}
-                        className="text-[9px] font-black text-black/35 dark:text-white/25 uppercase tracking-wider mt-3 mb-1 first:mt-0 select-none"
-                      >
-                        {item.label}
-                      </span>
-                    );
-                  }
-
-                  const isExternal = item.href?.startsWith('http') || item.href?.startsWith('mailto');
-
-                  return (
-                    <a
-                      key={idx}
-                      href={item.href}
-                      target={isExternal ? '_blank' : undefined}
-                      rel={isExternal ? 'noreferrer' : undefined}
-                      className={`text-xs font-semibold flex items-center gap-1 group w-fit transition-colors duration-200 ${
-                        item.highlight
-                          ? 'text-brand dark:text-brand hover:text-brand/80'
-                          : 'text-black/60 dark:text-white/60 hover:text-brand dark:hover:text-white'
-                      }`}
-                    >
-                      <span>{item.label}</span>
-                      {item.badge && (
-                        <span className="text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-brand/10 text-brand select-none scale-90 origin-left">
-                          {item.badge}
-                        </span>
-                      )}
-                      {item.highlight && (
-                        <ArrowUpRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                      )}
-                    </a>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
-        </div>
-
-      </div>
-
-      {/* Socials & Sub-Footer */}
-      <div className="max-w-6xl mx-auto px-6 mt-16 pt-8 border-t border-black/5 dark:border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
-        
-        {/* Social Icons */}
-        <div className="flex flex-col items-center md:items-start gap-3">
-          <span className="text-[10px] font-extrabold text-black/40 dark:text-white/30 uppercase tracking-[0.2em] select-none">
-            Contacts
-          </span>
-          <div className="flex gap-2.5">
+          {/* Social Icons */}
+          <div className="flex gap-2.5 mt-2">
             {socialLinks.map((soc) => (
               <a
                 key={soc.label}
                 href={soc.href}
                 target="_blank"
                 rel="noreferrer"
-                className="w-9 h-9 rounded-xl border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 flex items-center justify-center text-black/55 dark:text-white/55 hover:text-brand dark:hover:text-white hover:border-brand/40 dark:hover:border-brand/40 active:scale-95 transition-all shadow-sm hover:shadow-md"
+                className="w-9 h-9 rounded-xl border border-outline-variant bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-primary hover:border-primary/40 active:scale-95 transition-all"
                 title={soc.label}
                 aria-label={soc.label}
               >
@@ -220,14 +117,27 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
-        {/* Bottom utility links */}
-        <div className="flex flex-wrap justify-center gap-6 text-[10px] text-black/45 dark:text-white/40 font-semibold">
-          <a href="#" className="hover:text-brand transition-colors">Privacy Policy</a>
-          <a href="#" className="hover:text-brand transition-colors">Terms of Service</a>
-          <a href="#" className="hover:text-brand transition-colors">Cookie Policy</a>
-          <a href="#" className="hover:text-brand transition-colors">Sitemap</a>
+        {/* Link columns */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
+          {linkSections.map((section) => (
+            <div key={section.title} className="flex flex-col gap-3">
+              <span className="font-bold text-label-md text-on-surface">{section.title}</span>
+              {section.items.map((item) => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className="text-on-surface-variant hover:text-primary transition-colors"
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
+          ))}
         </div>
+      </div>
 
+      <div className="mt-stack-xl pt-8 border-t border-outline-variant max-w-container-max mx-auto px-margin-desktop text-center md:text-left text-caption text-on-surface-variant">
+        © {new Date().getFullYear()} ClieX AI Solutions. All rights reserved.
       </div>
     </footer>
   );

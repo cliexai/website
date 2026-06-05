@@ -2,9 +2,7 @@ import React, { useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Loader2 } from 'lucide-react';
 import { PortalShell } from '../components/portal/PortalShell';
-
-// ─── Admin emails — these users get redirected to /admin ───────
-const ADMIN_EMAILS = ['cliexai@gmail.com', 'amiador017@gmail.com'];
+import { isAdminEmail } from '../lib/adminEmails';
 
 export const PortalPage: React.FC = () => {
   const { user, loading, signOut } = useAuth();
@@ -20,7 +18,7 @@ export const PortalPage: React.FC = () => {
 
     // Admin users → redirect to admin portal
     const email = user.email?.toLowerCase();
-    if (email && ADMIN_EMAILS.includes(email)) {
+    if (email && isAdminEmail(email)) {
       window.location.href = '/admin';
       return;
     }
@@ -36,14 +34,13 @@ export const PortalPage: React.FC = () => {
   }
 
   // If admin email, show loader during redirect
-  const email = user.email?.toLowerCase();
-  if (email && ADMIN_EMAILS.includes(email)) {
-    return (
-      <div className="min-h-screen bg-[#0c0c0c] flex items-center justify-center">
-        <Loader2 className="w-6 h-6 text-brand animate-spin" />
-      </div>
-    );
-  }
+  // if (email && ADMIN_EMAILS.includes(email)) {
+  //   return (
+  //     <div className="min-h-screen bg-[#0c0c0c] flex items-center justify-center">
+  //       <Loader2 className="w-6 h-6 text-brand animate-spin" />
+  //     </div>
+  //   );
+  // }
 
   // Extract user display info
   const userName = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || 'User';

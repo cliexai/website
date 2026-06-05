@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronDown, HelpCircle } from 'lucide-react';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 interface FAQItem {
   question: string;
@@ -8,87 +8,81 @@ interface FAQItem {
 }
 
 export const FAQ: React.FC = () => {
+  const isMobile = useIsMobile();
   const [openIdx, setOpenIdx] = useState<number | null>(null);
 
   const faqs: FAQItem[] = [
     {
-      question: 'Won’t this sound like a cold, robotic answering machine that frustrates my customers?',
-      answer: 'Absolutely not. The era of robotic, pre-recorded menu prompts is over. Our AI Voice Agents run on state-of-the-art Text-to-Speech (TTS) models with natural breath patterns, human-like pacing, and context-dependent inflection. They adjust to conversational flow, respond to verbal interruptions instantly (<800ms latency), and sound almost indistinguishable from a standard receptionist over a phone line. Most callers do not even realize they are speaking with an artificial agent.',
+      question: 'How natural does the voice sound?',
+      answer: 'Our voices are powered by advanced neural synthesis, featuring human-like breathing, pausing, and emotional inflection. Most customers can\'t tell they are speaking to an AI.',
     },
     {
-      question: 'What happens if a caller asks a complex question that the AI doesn\'t know how to answer?',
+      question: 'Can it handle complex technical issues?',
+      answer: 'Yes. By uploading your technical documentation to our knowledge base, the agent can troubleshoot complex software and hardware issues based on your specific protocols.',
+    },
+    {
+      question: 'What happens if the AI gets stuck?',
+      answer: 'If the agent detects confusion or if the customer requests a human, the call is instantly transferred to your live support team with a full transcript of the conversation so far.',
+    },
+    {
+      question: 'Is my data secure and GDPR compliant?',
+      answer: 'Absolutely. We are SOC2 Type II compliant and offer end-to-end encryption for all call data. We provide full GDPR tools for data deletion and privacy management.',
+    },
+    {
+      question: 'How many languages are supported?',
+      answer: 'We currently support 95+ languages and dialects, including regional accents to ensure your global customers feel right at home.',
+    },
+    {
+      question: 'Do I need a special phone system?',
+      answer: 'No. ClieX AI works with any VoIP system, SIP trunk, or even traditional analog lines via simple call forwarding.',
+    },
+    {
+      question: 'How do you prevent the AI from making up information (hallucinating)?',
+      answer: 'Our systems implement a security layer called Retrieval-Augmented Generation (RAG). This constructs a strict knowledge base using only your verified documents, price sheets, and operational handbooks. The agent is strictly forbidden from generating answers outside this repository.',
+    },
+    {
+      question: 'Can the agent actually book appointments into my calendar?',
       answer: (
         <>
-          We program our agents with strict operational guardrails and "fallback escalations." If a caller presents a highly complex, off-script, or emotional query, the AI is trained to remain polite, gracefully acknowledge the limit of its immediate information, capture the customer's detail requests, and immediately execute one of two workflows:
-          <ul className="list-disc pl-5 mt-2 space-y-1">
-            <li>Trigger a live hot-transfer to an available team member's phone.</li>
-            <li>Log a high-priority ticket inside your CRM for immediate human call-back.</li>
-          </ul>
-        </>
-      ),
-    },
-    {
-      question: 'How do you prevent the AI from making up information (hallucinating) or quoting the wrong prices?',
-      answer: 'Our systems do not use public, unfiltered AI models. We implement a security layer called Retrieval-Augmented Generation (RAG). This constructs a strict knowledge base using only your verified documents, price sheets, and operational handbooks. The agent is strictly forbidden from generating answers outside this repository. If a parameter is not explicitly written in the script, the AI will not state it.',
-    },
-    {
-      question: 'Is my business data and my customers\' information secure?',
-      answer: 'Security is our top priority. All voice recordings and system transcripts are processed through encrypted data channels. For medical, financial, or legal companies, we configure specialized HIPAA-compliant and SOC 2-compliant environments where transcriptions are automatically stripped of sensitive personal identifier data (PII) before storage.',
-    },
-    {
-      question: 'Can the agent actually book appointments directly into my existing calendar system?',
-      answer: 'Yes. Our AI Voice Agents do not just write down dates. They integrate directly with your live booking tools (including Calendly, Acuity, GoHighLevel, and Google Calendar) via secure API channels. During the conversation, the agent reads your live schedule, negotiates a convenient open slot with the caller, schedules the event, and triggers an immediate text-back confirmation.',
-    },
-    {
-      question: 'What is the onboarding and deployment process like?',
-      answer: (
-        <>
-          We do all the heavy lifting.
-          <ul className="space-y-2 mt-2">
-            <li><strong>Phase 1 (Discovery):</strong> We analyze your current inbound/outbound call logs to map out typical questions and conversation flows.</li>
-            <li><strong>Phase 2 (Development):</strong> We design the scripts, engineer prompt safety parameters, build your custom knowledge base, and choose the perfect brand voice.</li>
-            <li><strong>Phase 3 (Testing):</strong> We thoroughly test the agent across edge cases to ensure logical consistency and secure calendar/CRM sync stability.</li>
-            <li><strong>Phase 4 (Live Launch):</strong> We connect the agent to your primary phone lines, enabling you to capture 100% of missed calls from day one.</li>
-          </ul>
+          Yes. Our AI Voice Agents integrate directly with your live booking tools (including Calendly, Acuity, GoHighLevel, and Google Calendar) via secure API channels. During the conversation, the agent reads your live schedule, negotiates a convenient open slot, schedules the event, and triggers an immediate text-back confirmation.
         </>
       ),
     },
   ];
 
   return (
-    <section id="faq" className="max-w-4xl mx-auto px-6 py-10 md:py-16 relative z-10 border-t border-black/10 dark:border-white/10">
-      <div className="text-center mb-16">
-        <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight text-black dark:text-white">
-          Frequently Asked Questions
-        </h2>
-        <p className="mt-4 text-black/50 dark:text-white/50 text-sm md:text-base">
-          Everything you need to know about setting up and running ClieX AI Voice Agents.
-        </p>
-      </div>
+    <section id="faq" className="py-stack-xl px-margin-desktop max-w-3xl mx-auto">
+      <motion.div
+        initial={{ opacity: 0, y: isMobile ? 20 : 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-60px' }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        className="text-center mb-16"
+      >
+        <h2 className="font-headline text-headline-lg mb-4 text-on-surface">Common Questions</h2>
+        <p className="text-on-surface-variant">Everything you need to know about our AI agents.</p>
+      </motion.div>
 
-      <div className="flex flex-col gap-4">
+      <div className="space-y-4">
         {faqs.map((faq, idx) => {
           const isOpen = openIdx === idx;
           return (
-            <div
+            <motion.div
               key={idx}
-              className="liquid-glass rounded-2xl border border-black/5 dark:border-white/10 overflow-hidden bg-white/5 dark:bg-white/[0.01]"
+              initial={{ opacity: 0, y: isMobile ? 15 : 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-30px' }}
+              transition={{ duration: 0.5, delay: idx * 0.05 }}
+              className="bg-surface-container rounded-2xl border border-outline-variant overflow-hidden"
             >
               <button
                 onClick={() => setOpenIdx(isOpen ? null : idx)}
-                className="w-full px-6 py-5 flex items-start justify-between text-left focus:outline-none transition-all group"
+                className="flex items-center justify-between w-full p-6 cursor-pointer text-left font-bold text-body-lg text-on-surface group"
               >
-                <span className="flex items-start gap-3">
-                  <HelpCircle className="w-5 h-5 text-brand shrink-0 mt-0.5" />
-                  <span className="text-sm font-bold text-black dark:text-white group-hover:text-brand transition-colors">
-                    {faq.question}
-                  </span>
+                <span>{faq.question}</span>
+                <span className={`material-symbols-outlined transition-transform duration-300 ml-4 shrink-0 ${isOpen ? 'rotate-180' : ''}`}>
+                  expand_more
                 </span>
-                <ChevronDown
-                  className={`w-4 h-4 text-black/40 dark:text-white/40 transition-transform duration-300 mt-0.5 shrink-0 ml-4 ${
-                    isOpen ? 'rotate-180 text-brand' : ''
-                  }`}
-                />
               </button>
 
               <AnimatePresence initial={false}>
@@ -99,15 +93,13 @@ export const FAQ: React.FC = () => {
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.3, ease: 'easeInOut' }}
                   >
-                    <div className="px-6 pb-6 pt-1 border-t border-black/5 dark:border-white/5">
-                      <div className="text-sm text-black/60 dark:text-white/60 leading-[1.6] font-medium">
-                        {faq.answer}
-                      </div>
+                    <div className="px-6 pb-6 text-on-surface-variant leading-relaxed">
+                      {faq.answer}
                     </div>
                   </motion.div>
                 )}
               </AnimatePresence>
-            </div>
+            </motion.div>
           );
         })}
       </div>

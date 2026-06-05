@@ -166,7 +166,7 @@ export const Pricing: React.FC = () => {
                 }}
                 className="c3-btn"
               >
-                Choose {plan.tier}
+                {plan.tier}
               </button>
             </div>
           );

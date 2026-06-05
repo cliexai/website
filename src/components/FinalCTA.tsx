@@ -1,50 +1,49 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { AppleButton } from './SharedPrimitives';
-import { ChevronRight } from 'lucide-react';
-import { scrollToId } from '../utils/smoothScroll';
 import { useIsMobile } from '../hooks/useIsMobile';
 
 export const FinalCTA: React.FC = () => {
   const isMobile = useIsMobile();
+
   return (
-    <section className="w-full h-full">
+    <section className="px-margin-desktop py-stack-xl">
       <motion.div
-        initial={{ opacity: 0, y: isMobile ? 32 : 65 }}
+        initial={{ opacity: 0, y: isMobile ? 30 : 60 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: isMobile, margin: isMobile ? '-40px' : '-80px' }}
-        transition={{ duration: isMobile ? 0.45 : 1, ease: [0.22, 1, 0.36, 1] }}
-        className="liquid-glass relative overflow-hidden rounded-3xl px-8 py-16 md:py-24 text-center border border-black/10 dark:border-white/10 bg-white/5 dark:bg-white/[0.01] h-full flex flex-col justify-center"
+        viewport={{ once: true, margin: '-60px' }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        className="max-w-container-max mx-auto bg-primary rounded-[2rem] p-stack-xl text-center text-on-primary relative overflow-hidden shadow-2xl shadow-primary/30"
       >
-        {/* Radial Glow Overlay exactly as requested */}
-        <div
-          className="absolute inset-0 z-0 pointer-events-none opacity-30 select-none"
-          style={{
-            backgroundImage: 'radial-gradient(600px circle at 50% 0%, rgba(139, 92, 246, 0.25), transparent 70%)',
-          }}
-        />
+        {/* Decorative wave */}
+        <div className="absolute inset-0 opacity-10 pointer-events-none">
+          <svg className="absolute bottom-0 w-full h-full" viewBox="0 0 1440 320" preserveAspectRatio="none">
+            <path
+              d="M0,192L48,176C96,160,192,128,288,138.7C384,149,480,203,576,213.3C672,224,768,192,864,170.7C960,149,1056,139,1152,154.7C1248,171,1344,213,1392,234.7L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
+              fill="#ffffff"
+              fillOpacity="1"
+            />
+          </svg>
+        </div>
 
-        <div className="relative z-10 flex flex-col items-center">
-          {/* h2 exact lines, adjusted for rebranding */}
-          <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-[1.02] text-black dark:text-white flex flex-col items-center">
-            <span>Close the gaps.</span>
-            <span className="text-brand">Open your business.</span>
+        <div className="relative z-10">
+          <h2 className="font-headline text-headline-xl mb-6">
+            Ready to automate your customer service?
           </h2>
-
-          {/* Paragraph exact copy, adapted */}
-          <p className="mt-6 text-black/60 dark:text-white/60 max-w-md mx-auto text-sm md:text-base leading-[1.6] font-medium">
-            Join thousands of builders, founders, and operators who treat customer calls like an asset — not a bottleneck.
+          <p className="font-body text-body-lg mb-stack-lg max-w-2xl mx-auto opacity-90">
+            Join 500+ enterprises scaling their support operations with ClieX AI Solutions.
           </p>
-
-          {/* Action buttons */}
-          <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <AppleButton label="Try for free" onClick={() => window.location.href = '/signup'} />
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
-              onClick={() => scrollToId('lead-form')}
-              className="group rounded-full border border-black/15 dark:border-white/15 text-black dark:text-white text-sm font-semibold px-6 py-3.5 hover:bg-black/5 dark:hover:bg-white/5 active:scale-95 transition-all backdrop-blur-md flex items-center gap-1.5"
+              onClick={() => window.location.href = '/signup'}
+              className="px-10 py-4 bg-tertiary-fixed text-on-tertiary font-bold rounded-xl shadow-xl hover:scale-105 transition-all"
             >
-              <span>Talk to sales</span>
-              <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+              Get Started Now
+            </button>
+            <button
+              onClick={() => window.location.href = '/get-started'}
+              className="px-10 py-4 border-2 border-on-primary text-on-primary font-bold rounded-xl hover:bg-white/10 transition-all"
+            >
+              Talk to an Expert
             </button>
           </div>
         </div>

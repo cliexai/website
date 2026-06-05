@@ -5,7 +5,7 @@
 // HOW TO DEPLOY:
 // 1. Install Supabase CLI: npm install -g supabase
 // 2. Login: supabase login
-// 3. Link project: supabase link --project-ref zfusxsegebjsdycevnnd
+// 3. Link project: supabase link --project-ref YOUR_PROJECT_REF
 // 4. Set secret: supabase secrets set RESEND_API_KEY=your_resend_key
 // 5. Deploy: supabase functions deploy notify-new-lead --no-verify-jwt
 //
@@ -14,14 +14,14 @@
 //   Name: notify-new-lead
 //   Table: leads
 //   Events: INSERT
-//   URL: https://zfusxsegebjsdycevnnd.supabase.co/functions/v1/notify-new-lead
+//   URL: https://YOUR_PROJECT_REF.supabase.co/functions/v1/notify-new-lead
 //   HTTP Method: POST
 // =============================================================
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
-const NOTIFY_EMAIL   = "cliexai@gmail.com";
+const NOTIFY_EMAIL   = Deno.env.get("NOTIFY_EMAIL") || "cliexai@gmail.com";
 const FROM_EMAIL     = "ClieX AI <onboarding@resend.dev>";
 
 serve(async (req: Request) => {
